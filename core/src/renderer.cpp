@@ -5,9 +5,10 @@
 namespace FGames::core
 {
 
-Renderer::Renderer(int width, int height)
+Renderer::Renderer(int width, int height, Terminal& terminal)
     : width_(width),
       height_(height),
+      terminal_(terminal),
       buffer_(height, std::string(width, ' '))
 {
 }
@@ -33,17 +34,16 @@ void Renderer::draw(int x, int y, char symbol)
 
 void Renderer::present()
 {
-    // очистить экран консоли
-    std::cout << "\033[2J";
-    // вернуть каретку в начальную позицию
-    std::cout << "\033[H";
+    terminal_.moveCursor(0,0);
+    std::string frame;
 
-    for (const auto& row : buffer_)
+    for(const auto& row : buffer_)
     {
-        std::cout << row << '\n';
+        frame += row;
+        frame += '\n';
     }
 
-    std::cout.flush();
+    terminal_.write(frame);
 }
 
 }
