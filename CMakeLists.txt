@@ -13,6 +13,10 @@ add_executable(
     
     core/src/engine.cpp
     core/src/input.cpp
+    core/src/renderer.cpp
+    core/src/timer.cpp
+
+    core/platform/linux/src/terminal.cpp
 
     games/demo/demo.cpp
 )
