@@ -37,29 +37,23 @@ std::vector<core::Event> LinuxInput::poll()
     {
         events.push_back({
             core::EventType::QuitRequested,
-            core::Key::Unknown
         });
 
         return events;
     }
 
 
-    // Escape / стрелки
+    // Escape / arrows
     if (c == 0x1b)
     {
         const int next = readRawByte();
 
-        // Обычный Escape
+        // Escape
         if (next == -1)
         {
-            events.push_back({
-                core::EventType::KeyPressed,
-                core::Key::Escape
-            });
-
+            events.push_back({core::EventType::KeyPressed, core::Key::Escape});
             return events;
         }
-
 
         // Escape sequence
         if (next == '[')
