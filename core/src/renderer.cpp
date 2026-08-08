@@ -1,19 +1,26 @@
 #include "../head/renderer.h"
 
-#include <iostream>
-
 namespace FGames::core
 {
 
-Renderer::Renderer(Terminal& terminal, int width, int height)
-    : width_(width),
-      height_(height),
-      terminal_(terminal),
-      buffer_(height, std::string(width, ' '))
+Renderer::Renderer(
+    int width,
+    int height,
+    Terminal& terminal
+)
+    :
+    width_(width),
+    height_(height),
+    terminal_(terminal),
+    buffer_(
+        height,
+        std::string(width, ' ')
+    )
 {
 }
 
-void Renderer::clear() 
+
+void Renderer::clear()
 {
     for (auto& row : buffer_)
     {
@@ -21,7 +28,12 @@ void Renderer::clear()
     }
 }
 
-void Renderer::draw(int x, int y, char symbol)
+
+void Renderer::draw(
+    int x,
+    int y,
+    char symbol
+)
 {
     if (x < 0 || x >= width_)
         return;
@@ -32,12 +44,14 @@ void Renderer::draw(int x, int y, char symbol)
     buffer_[y][x] = symbol;
 }
 
+
 void Renderer::present()
 {
-    terminal_.moveCursor(0,0);
+    terminal_.move_cursor(0, 0);
+
     std::string frame;
 
-    for(const auto& row : buffer_)
+    for (const auto& row : buffer_)
     {
         frame += row;
         frame += '\n';

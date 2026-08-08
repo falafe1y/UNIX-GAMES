@@ -1,23 +1,84 @@
 cmake_minimum_required(VERSION 3.20)
 
-project(TerminalGames)
+project(FGames
+    VERSION 0.0.1
+    DESCRIPTION "Classic games for UNIX and Windows in terminal"
+    LANGUAGES CXX
+)
 
+set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
 set(CMAKE_CXX_STANDARD 20)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
-add_executable(
-    FGames
+# --------------------------------------------------
+# Platform
+# --------------------------------------------------
+
+if(WIN32)
+    set(PLATFORM_SOURCES
+        core/platform/win/src/win_input.cpp
+        core/platform/win/src/win_terminal.cpp
+    )
+
+elseif(UNIX)
+    set(PLATFORM_SOURCES
+        core/platform/linux/src/linux_input.cpp
+        core/platform/linux/src/linux_terminal.cpp
+    )
+
+else()
+    message(FATAL_ERROR "Unsupported platform")
+
+endif()
+
+# --------------------------------------------------
+# Executable
+# --------------------------------------------------
+
+add_executable(FGames
 
     launcher/main.cpp
     launcher/launcher.cpp
-    
+
     core/src/engine.cpp
-    core/src/input.cpp
     core/src/renderer.cpp
     core/src/timer.cpp
 
-    core/platform/linux/src/terminal.cpp
-    core/platform/linux/src/input.cpp
-
     games/demo/demo.cpp
+
+    ${PLATFORM_SOURCES}
+)
+
+# --------------------------------------------------
+# Platform definition
+# --------------------------------------------------
+
+if(WIN32)
+    target_compile_definitions(
+        FGames
+        PRIVATE
+        FGames_PLATFORM_WINDOWS
+    )
+
+elseif(UNIX)
+    target_compile_definitions(
+        FGames
+        PRIVATE
+        FGames_PLATFORM_LINUX
+    )
+
+endif()
+
+# --------------------------------------------------
+# Include directories
+# --------------------------------------------------
+
+target_include_directories(FGames PRIVATE
+    core/head
+    
+    core/platform/linux/head
+    core/platform/win/head
+
+    games/demo
+    launcher
 )

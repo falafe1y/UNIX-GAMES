@@ -9,7 +9,8 @@ namespace FGames::core
 class Input
 {
 public:
-    std::vector<Event> poll();
+    virtual ~Input() = default;
+    virtual std::vector<Event> poll() = 0;
 
 };
 

@@ -5,7 +5,7 @@ namespace FGames::launcher
 
 void Launcher::run()
 {
-    std::cout << "Launcher" << "\n";
+    // std::cout << "Launcher" << "\n";
 
     currentGame_ =std::make_unique<FGames::games::DemoGame>();
 

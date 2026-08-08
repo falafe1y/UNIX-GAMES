@@ -1,4 +1,3 @@
-#include <iostream>
 #include "launcher.h"
 
 int main()

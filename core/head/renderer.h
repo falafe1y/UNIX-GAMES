@@ -1,9 +1,9 @@
 #pragma once
 
+#include <string>
 #include <vector>
-#include <iostream>
 
-#include "../platform/linux/head/terminal.h"
+#include "terminal.h"
 
 namespace FGames::core
 {
@@ -11,15 +11,28 @@ namespace FGames::core
 class Renderer
 {
 public:
-    Renderer(Terminal& terminal, int width = 40, int height = 20);
+    Renderer(
+        int width,
+        int height,
+        Terminal& terminal
+    );
+
     void clear();
-    void draw(int x, int y, char symbol);
+
+    void draw(
+        int x,
+        int y,
+        char symbol
+    );
+
     void present();
 
 private:
     int width_;
     int height_;
+
     Terminal& terminal_;
+
     std::vector<std::string> buffer_;
 };
 

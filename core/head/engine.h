@@ -1,8 +1,11 @@
 #pragma once
 
+#include <memory>
+
 #include "game.h"
-#include "renderer.h"
 #include "input.h"
+#include "renderer.h"
+#include "terminal.h"
 #include "timer.h"
 
 namespace FGames::core
@@ -11,15 +14,16 @@ namespace FGames::core
 class Engine
 {
 public:
-    Engine() : renderer_(terminal_) {}
+    Engine();
 
-    void run(FGames::core::Game& game);
+    void run(Game& game);
 
 private:
-    bool running_ = true;
-    Terminal terminal_;
+    bool running_{true};
+
+    std::unique_ptr<Input> input_;
+    std::unique_ptr<Terminal> terminal_;
     Renderer renderer_;
-    Input input_;
     Timer timer_;
 };
 
