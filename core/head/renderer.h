@@ -11,7 +11,7 @@ namespace FGames::core
 class Renderer
 {
 public:
-    Renderer(int width = 40, int height = 20, Terminal& terminal);
+    Renderer(Terminal& terminal, int width = 40, int height = 20);
     void clear();
     void draw(int x, int y, char symbol);
     void present();

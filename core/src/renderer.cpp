@@ -5,7 +5,7 @@
 namespace FGames::core
 {
 
-Renderer::Renderer(int width, int height, Terminal& terminal)
+Renderer::Renderer(Terminal& terminal, int width, int height)
     : width_(width),
       height_(height),
       terminal_(terminal),
