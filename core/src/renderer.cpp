@@ -12,13 +12,9 @@ Renderer::Renderer(
     width_(width),
     height_(height),
     terminal_(terminal),
-    buffer_(
-        height,
-        std::string(width, ' ')
-    )
+    buffer_(height, std::string(width, ' '))
 {
 }
-
 
 void Renderer::clear()
 {
@@ -28,12 +24,7 @@ void Renderer::clear()
     }
 }
 
-
-void Renderer::draw(
-    int x,
-    int y,
-    char symbol
-)
+void Renderer::draw(int x, int y, char symbol)
 {
     if (x < 0 || x >= width_)
         return;
@@ -44,6 +35,22 @@ void Renderer::draw(
     buffer_[y][x] = symbol;
 }
 
+void Renderer::draw_border()
+{
+    // Верхняя и нижняя границы
+    for (int x = 0; x < width_; ++x)
+    {
+        buffer_[0][x] = '#';
+        buffer_[height_ - 1][x] = '#';
+    }
+
+    // Левая и правая границы
+    for (int y = 0; y < height_; ++y)
+    {
+        buffer_[y][0] = '#';
+        buffer_[y][width_ - 1] = '#';
+    }
+}
 
 void Renderer::present()
 {

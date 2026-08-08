@@ -45,6 +45,7 @@ add_executable(FGames
     core/src/timer.cpp
 
     games/demo/demo.cpp
+    games/snake/snake.cpp
 
     ${PLATFORM_SOURCES}
 )
@@ -80,5 +81,6 @@ target_include_directories(FGames PRIVATE
     core/platform/win/head
 
     games/demo
+    games/snake
     launcher
 )

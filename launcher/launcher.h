@@ -5,6 +5,7 @@
 #include "../core/head/engine.h"
 #include "../core/head/game.h"
 #include "../games/demo/demo.h"
+#include "../games/snake/snake.h"
 
 namespace FGames::launcher
 {
@@ -18,7 +19,6 @@ public:
 
 private:
     std::unique_ptr<FGames::core::Game> currentGame_;
-
     FGames::core::Engine engine_;
 };
 

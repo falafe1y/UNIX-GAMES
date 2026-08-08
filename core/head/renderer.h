@@ -11,28 +11,17 @@ namespace FGames::core
 class Renderer
 {
 public:
-    Renderer(
-        int width,
-        int height,
-        Terminal& terminal
-    );
+    Renderer(int width, int height, Terminal& terminal);
 
     void clear();
-
-    void draw(
-        int x,
-        int y,
-        char symbol
-    );
-
+    void draw(int x, int y, char symbol);
+    void draw_border();
     void present();
 
 private:
     int width_;
     int height_;
-
     Terminal& terminal_;
-
     std::vector<std::string> buffer_;
 };
 

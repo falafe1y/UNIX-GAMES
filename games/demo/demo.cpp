@@ -42,12 +42,8 @@ void DemoGame::update(float)
 void DemoGame::render(core::Renderer& renderer)
 {
     renderer.clear();
-
-    renderer.draw(
-        x_,
-        y_,
-        '@');
-
+    renderer.draw(x_, y_, '@');
+    renderer.draw_border();
     renderer.present();
 }
 

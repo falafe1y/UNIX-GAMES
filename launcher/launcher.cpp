@@ -7,8 +7,7 @@ void Launcher::run()
 {
     // std::cout << "Launcher" << "\n";
 
-    currentGame_ =std::make_unique<FGames::games::DemoGame>();
-
+    currentGame_ =std::make_unique<FGames::games::SnakeGame>();
 
     engine_.run(*currentGame_);
 
