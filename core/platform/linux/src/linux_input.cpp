@@ -8,12 +8,7 @@ namespace fgames::platform::linux_platform
 int LinuxInput::readRawByte()
 {
     unsigned char c;
-
-    const ssize_t n = read(
-        STDIN_FILENO,
-        &c,
-        1
-    );
+    const ssize_t n = read(STDIN_FILENO, &c, 1);
 
     if (n <= 0)
         return -1;
@@ -21,27 +16,23 @@ int LinuxInput::readRawByte()
     return c;
 }
 
-
 std::vector<core::Event> LinuxInput::poll()
 {
     std::vector<core::Event> events;
 
     const int c = readRawByte();
 
-    if (c == -1)
-        return events;
-
+    if (c == -1) return events;
 
     // Ctrl+C
     if (c == 0x03)
     {
         events.push_back({
-            core::EventType::QuitRequested,
+            core::EventType::QuitRequested
         });
 
         return events;
     }
-
 
     // Escape / arrows
     if (c == 0x1b)
@@ -51,7 +42,7 @@ std::vector<core::Event> LinuxInput::poll()
         // Escape
         if (next == -1)
         {
-            events.push_back({core::EventType::KeyPressed, core::Key::Escape});
+            events.push_back({core::EventType::KeyPressed, core::EventKey::Escape});
             return events;
         }
 
@@ -63,31 +54,19 @@ std::vector<core::Event> LinuxInput::poll()
             switch (arrow)
             {
                 case 'A':
-                    events.push_back({
-                        core::EventType::KeyPressed,
-                        core::Key::Up
-                    });
+                    events.push_back({core::EventType::KeyPressed, core::EventKey::Up});
                     break;
 
                 case 'B':
-                    events.push_back({
-                        core::EventType::KeyPressed,
-                        core::Key::Down
-                    });
+                    events.push_back({core::EventType::KeyPressed, core::EventKey::Down});
                     break;
 
                 case 'C':
-                    events.push_back({
-                        core::EventType::KeyPressed,
-                        core::Key::Right
-                    });
+                    events.push_back({core::EventType::KeyPressed, core::EventKey::Right});
                     break;
 
                 case 'D':
-                    events.push_back({
-                        core::EventType::KeyPressed,
-                        core::Key::Left
-                    });
+                    events.push_back({core::EventType::KeyPressed, core::EventKey::Left});
                     break;
             }
         }
@@ -95,18 +74,12 @@ std::vector<core::Event> LinuxInput::poll()
         return events;
     }
 
-
     // Enter
     if (c == '\r' || c == '\n')
     {
-        events.push_back({
-            core::EventType::KeyPressed,
-            core::Key::Enter
-        });
-
+        events.push_back({core::EventType::KeyPressed, core::EventKey::Enter});
         return events;
     }
-
 
     return events;
 }

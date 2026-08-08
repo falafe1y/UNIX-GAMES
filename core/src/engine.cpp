@@ -21,50 +21,22 @@ namespace fgames::core
 {
 
 Engine::Engine()
-
 #ifdef FGames_PLATFORM_LINUX
-
     :
-    input_(
-        std::make_unique<
-            fgames::platform::linux_platform::LinuxInput
-        >()
-    ),
-    terminal_(
-        std::make_unique<
-            fgames::platform::linux_platform::LinuxTerminal
-        >()
-    ),
-    renderer_(
-        40,
-        20,
-        *terminal_
-    )
+    input_(std::make_unique<fgames::platform::linux_platform::LinuxInput>()),
+    terminal_(std::make_unique<fgames::platform::linux_platform::LinuxTerminal>()),
+    renderer_(40, 20, *terminal_)
 
 #elif defined(FGames_PLATFORM_WINDOWS)
-
     :
-    input_(
-        std::make_unique<
-            fgames::platform::win_platform::WinInput
-        >()
-    ),
-    terminal_(
-        std::make_unique<
-            fgames::platform::win_platform::WinTerminal
-        >()
-    ),
-    renderer_(
-        40,
-        20,
-        *terminal_
-    )
+    input_(std::make_unique<fgames::platform::win_platform::WinInput>()),
+    terminal_(std::make_unique<fgames::platform::win_platform::WinTerminal>()),
+    renderer_(40, 20, *terminal_)
 
 #endif
 
 {
 }
-
 
 void Engine::run(Game& game)
 {
@@ -72,11 +44,8 @@ void Engine::run(Game& game)
 
     while (running_)
     {
-        const float delta_time =
-            timer_.delta_time();
-
-        const auto events =
-            input_->poll();
+        const float delta_time = timer_.delta_time();
+        const auto events = input_->poll();
 
         for (const auto& event : events)
         {
@@ -89,11 +58,9 @@ void Engine::run(Game& game)
             game.handle_event(event);
         }
 
-        if (!running_)
-            break;
-
+        if (!running_) break;
+        
         game.update(delta_time);
-
         game.render(renderer_);
     }
 }

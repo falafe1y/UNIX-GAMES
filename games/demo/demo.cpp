@@ -8,24 +8,23 @@ namespace fgames::games
 void DemoGame::handle_event(
     const core::Event& event)
 {
-    if (event.type != core::EventType::KeyPressed)
-        return;
+    if (event.type != core::EventType::KeyPressed) return;
 
     switch (event.key)
     {
-    case core::Key::Left:
+    case core::EventKey::Left:
         --x_;
         break;
 
-    case core::Key::Right:
+    case core::EventKey::Right:
         ++x_;
         break;
 
-    case core::Key::Up:
+    case core::EventKey::Up:
         --y_;
         break;
 
-    case core::Key::Down:
+    case core::EventKey::Down:
         ++y_;
         break;
 
@@ -36,7 +35,6 @@ void DemoGame::handle_event(
 
 void DemoGame::update(float)
 {
-
 }
 
 void DemoGame::render(core::Renderer& renderer)

@@ -9,8 +9,7 @@ enum class EventType
     QuitRequested
 };
 
-
-enum class Key
+enum class EventKey
 {
     Unknown,
 
@@ -23,11 +22,10 @@ enum class Key
     Escape
 };
 
-
 struct Event
 {
     EventType type;
-    Key key = Key::Unknown;
+    EventKey key = EventKey::Unknown;
 };
 
 }

@@ -1,5 +1,4 @@
 #include "../head/input.h"
-
 #include "../platform/linux/head/input.h"
 
 namespace fgames::core
@@ -11,8 +10,7 @@ std::vector<Event> Input::poll()
 
     int c = readRawByte();
 
-    if (c == -1)
-        return events;
+    if (c == -1) return events;
 
     // Ctrl+C - выходим из игры
     if (c == 0x03)
@@ -29,7 +27,7 @@ std::vector<Event> Input::poll()
         // одиночный Esc, без продолжения - выходим из игры
         if (next == -1)
         {
-            events.push_back({EventType::QuitRequested, Key::Escape});
+            events.push_back({EventType::QuitRequested, EventKey::Escape});
             return events;
         }
 
@@ -40,19 +38,19 @@ std::vector<Event> Input::poll()
             switch (arrow)
             {
             case 'A':
-                events.push_back({EventType::KeyPressed, Key::Up});
+                events.push_back({EventType::KeyPressed, EventKey::Up});
                 break;
 
             case 'B':
-                events.push_back({EventType::KeyPressed, Key::Down});
+                events.push_back({EventType::KeyPressed, EventKey::Down});
                 break;
 
             case 'C':
-                events.push_back({EventType::KeyPressed, Key::Right});
+                events.push_back({EventType::KeyPressed, EventKey::Right});
                 break;
 
             case 'D':
-                events.push_back({EventType::KeyPressed, Key::Left});
+                events.push_back({EventType::KeyPressed, EventKey::Left});
                 break;
 
             default:
@@ -65,7 +63,7 @@ std::vector<Event> Input::poll()
 
     if (c == '\r' || c == '\n')
     {
-        events.push_back({EventType::KeyPressed, Key::Enter});
+        events.push_back({EventType::KeyPressed, EventKey::Enter});
         return events;
     }
 

@@ -9,7 +9,6 @@ namespace fgames::platform::linux_platform
 LinuxTerminal::LinuxTerminal()
 {
     enable_raw_mode();
-
     clear();
     hide_cursor();
 }
@@ -27,40 +26,19 @@ LinuxTerminal::~LinuxTerminal()
 
 void LinuxTerminal::enable_raw_mode()
 {
-    if (tcgetattr(
-            STDIN_FILENO,
-            &original_terminal_
-        ) == -1)
+    if (tcgetattr(STDIN_FILENO, &original_terminal_) == -1)
     {
         return;
     }
 
-
     termios raw = original_terminal_;
 
-
-    raw.c_lflag &= ~(
-        ECHO |
-        ICANON |
-        ISIG
-    );
-
-
-    raw.c_iflag &= ~(
-        IXON |
-        ICRNL
-    );
-
-
+    raw.c_lflag &= ~(ECHO | ICANON | ISIG);
+    raw.c_iflag &= ~(IXON | ICRNL);
     raw.c_cc[VMIN] = 0;
     raw.c_cc[VTIME] = 0;
 
-
-    if (tcsetattr(
-            STDIN_FILENO,
-            TCSAFLUSH,
-            &raw
-        ) == 0)
+    if (tcsetattr(STDIN_FILENO, TCSAFLUSH, &raw) == 0)
     {
         raw_mode_enabled_ = true;
     }
@@ -68,12 +46,7 @@ void LinuxTerminal::enable_raw_mode()
 
 void LinuxTerminal::disable_raw_mode()
 {
-    tcsetattr(
-        STDIN_FILENO,
-        TCSAFLUSH,
-        &original_terminal_
-    );
-
+    tcsetattr(STDIN_FILENO, TCSAFLUSH, &original_terminal_);
     raw_mode_enabled_ = false;
 }
 
@@ -84,10 +57,7 @@ void LinuxTerminal::clear()
     std::cout.flush();
 }
 
-void LinuxTerminal::move_cursor(
-    int x,
-    int y
-)
+void LinuxTerminal::move_cursor(int x, int y)
 {
     // ANSI coordinates начинаются с 1
 
@@ -113,9 +83,7 @@ void LinuxTerminal::show_cursor()
     std::cout.flush();
 }
 
-void LinuxTerminal::write(
-    const std::string& text
-)
+void LinuxTerminal::write(const std::string& text)
 {
     std::cout << text;
     std::cout.flush();

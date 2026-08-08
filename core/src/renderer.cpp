@@ -3,11 +3,7 @@
 namespace fgames::core
 {
 
-Renderer::Renderer(
-    int width,
-    int height,
-    Terminal& terminal
-)
+Renderer::Renderer(int width, int height, Terminal& terminal)
     :
     width_(width),
     height_(height),
@@ -26,12 +22,8 @@ void Renderer::clear()
 
 void Renderer::draw(int x, int y, char symbol)
 {
-    if (x < 0 || x >= width_)
-        return;
-
-    if (y < 0 || y >= height_)
-        return;
-
+    if (x < 0 || x >= width_) return;
+    if (y < 0 || y >= height_) return;
     buffer_[y][x] = symbol;
 }
 

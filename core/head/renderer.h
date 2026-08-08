@@ -1,9 +1,9 @@
 #pragma once
 
+#include "terminal.h"
+
 #include <string>
 #include <vector>
-
-#include "terminal.h"
 
 namespace fgames::core
 {

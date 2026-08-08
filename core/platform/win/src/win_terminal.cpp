@@ -11,10 +11,7 @@ void WinTerminal::clear()
     std::cout << "\033[H";
 }
 
-void WinTerminal::move_cursor(
-    int x,
-    int y
-)
+void WinTerminal::move_cursor(int x, int y)
 {
     std::cout
         << "\033["
@@ -32,9 +29,7 @@ void WinTerminal::show_cursor()
 {
 }
 
-void WinTerminal::write(
-    const std::string& text
-)
+void WinTerminal::write(const std::string& text)
 {
     std::cout << text;
     std::cout.flush();

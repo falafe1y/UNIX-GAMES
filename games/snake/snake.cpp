@@ -25,41 +25,36 @@ void SnakeGame::handle_event(
     const fgames::core::Event& event
 )
 {
-    if (event.type == fgames::core::EventType::QuitRequested)
-    {
-        return;
-    }
-
-    if (event.type != fgames::core::EventType::KeyPressed)
-        return;
+    if (event.type == fgames::core::EventType::QuitRequested) return;
+    if (event.type != fgames::core::EventType::KeyPressed) return;
 
     switch (event.key)
     {
-        case fgames::core::Key::Up:
-
-            if (!is_opposite(direction_, Direction::Up))
+        case fgames::core::EventKey::Up:
+            if (!is_opposite(direction_, Direction::Up)) {
                 next_direction_ = Direction::Up;
+            }
 
             break;
 
-        case fgames::core::Key::Down:
-
-            if (!is_opposite(direction_, Direction::Down))
+        case fgames::core::EventKey::Down:
+            if (!is_opposite(direction_, Direction::Down)) {
                 next_direction_ = Direction::Down;
+            }
 
             break;
 
-        case fgames::core::Key::Left:
-
-            if (!is_opposite(direction_, Direction::Left))
+        case fgames::core::EventKey::Left:
+            if (!is_opposite(direction_, Direction::Left)) {
                 next_direction_ = Direction::Left;
+            }
 
             break;
 
-        case fgames::core::Key::Right:
-
-            if (!is_opposite(direction_, Direction::Right))
+        case fgames::core::EventKey::Right:
+            if (!is_opposite(direction_, Direction::Right)) {
                 next_direction_ = Direction::Right;
+            }
 
             break;
 
@@ -70,16 +65,13 @@ void SnakeGame::handle_event(
 
 void SnakeGame::update(float delta_time)
 {
-    if (state_ == SnakeState::GameOver)
-        return;
+    if (state_ == SnakeState::GameOver) return;
 
     move_timer_ += delta_time;
 
-    if (move_timer_ < move_interval_)
-        return;
+    if (move_timer_ < move_interval_) return;
 
     move_timer_ -= move_interval_;
-
     direction_ = next_direction_;
 
     move();
@@ -126,12 +118,9 @@ void SnakeGame::move()
     }
 }
 
-bool SnakeGame::is_collision(
-    const Position& position
-) const
+bool SnakeGame::is_collision(const Position& position) const
 {
     // Столкновение со стеной.
-
     if (position.x <= 0 ||
         position.x >= field_width_ - 1 ||
         position.y <= 0 ||
@@ -141,7 +130,6 @@ bool SnakeGame::is_collision(
     }
 
     // Столкновение с собственным телом.
-
     for (const auto& segment : snake_)
     {
         if (segment == position)
@@ -153,15 +141,8 @@ bool SnakeGame::is_collision(
 
 void SnakeGame::spawn_food()
 {
-    std::uniform_int_distribution<int> x_distribution(
-        1,
-        field_width_ - 2
-    );
-
-    std::uniform_int_distribution<int> y_distribution(
-        1,
-        field_height_ - 2
-    );
+    std::uniform_int_distribution<int> x_distribution(1, field_width_ - 2);
+    std::uniform_int_distribution<int> y_distribution(1, field_height_ - 2);
 
     Position new_food;
 
@@ -175,10 +156,7 @@ void SnakeGame::spawn_food()
     food_ = new_food;
 }
 
-bool SnakeGame::is_opposite(
-    Direction first,
-    Direction second
-) const
+bool SnakeGame::is_opposite(Direction first, Direction second) const
 {
     return
         (first == Direction::Up &&
@@ -194,33 +172,21 @@ bool SnakeGame::is_opposite(
          second == Direction::Left);
 }
 
-void SnakeGame::render(
-    fgames::core::Renderer& renderer
-)
+void SnakeGame::render(fgames::core::Renderer& renderer)
 {
     renderer.clear();
 
     renderer.draw_border();
 
-    // Еда.
+    // Еда
+    renderer.draw(food_.x, food_.y, '*');
 
-    renderer.draw(
-        food_.x,
-        food_.y,
-        '*'
-    );
-
-    // Змея.
-
+    // Змея
     bool is_head = true;
 
     for (const auto& segment : snake_)
     {
-        renderer.draw(
-            segment.x,
-            segment.y,
-            is_head ? '@' : 'o'
-        );
+        renderer.draw(segment.x, segment.y, is_head ? '@' : 'o');
 
         is_head = false;
     }

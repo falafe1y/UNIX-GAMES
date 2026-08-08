@@ -2,12 +2,10 @@
 
 #include "event.h"
 
-
 namespace fgames::core
 {
 
 class Renderer;
-
 
 class Game
 {
