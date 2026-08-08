@@ -2,7 +2,7 @@
 
 #include "../platform/linux/head/input.h"
 
-namespace FGames::core
+namespace fgames::core
 {
 
 std::vector<Event> Input::poll()

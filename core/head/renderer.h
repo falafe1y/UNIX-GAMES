@@ -5,7 +5,7 @@
 
 #include "terminal.h"
 
-namespace FGames::core
+namespace fgames::core
 {
 
 class Renderer

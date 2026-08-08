@@ -8,7 +8,7 @@
 #include "terminal.h"
 #include "timer.h"
 
-namespace FGames::core
+namespace fgames::core
 {
 
 class Engine

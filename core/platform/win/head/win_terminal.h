@@ -2,7 +2,7 @@
 
 #include "../../../head/terminal.h"
 
-namespace FGames::platform::win_platform
+namespace fgames::platform::win_platform
 {
 
 class WinTerminal final : public core::Terminal

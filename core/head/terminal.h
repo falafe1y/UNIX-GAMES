@@ -2,7 +2,7 @@
 
 #include <string>
 
-namespace FGames::core
+namespace fgames::core
 {
 
 class Terminal

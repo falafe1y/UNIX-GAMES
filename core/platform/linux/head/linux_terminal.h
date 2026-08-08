@@ -4,7 +4,7 @@
 
 #include <termios.h>
 
-namespace FGames::platform::linux_platform
+namespace fgames::platform::linux_platform
 {
 
 class LinuxTerminal final : public core::Terminal

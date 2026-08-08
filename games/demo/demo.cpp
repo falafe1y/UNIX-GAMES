@@ -2,7 +2,7 @@
 
 #include <iostream>
 
-namespace FGames::games
+namespace fgames::games
 {
 
 void DemoGame::handle_event(

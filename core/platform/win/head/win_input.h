@@ -2,7 +2,7 @@
 
 #include "../../../head/input.h"
 
-namespace FGames::platform::win_platform
+namespace fgames::platform::win_platform
 {
 
 class WinInput final : public core::Input

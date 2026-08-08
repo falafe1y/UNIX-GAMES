@@ -2,7 +2,7 @@
 
 int main()
 {
-    FGames::launcher::Launcher launcher;
+    fgames::launcher::Launcher launcher;
 
     launcher.run();
 

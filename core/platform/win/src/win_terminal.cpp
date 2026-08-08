@@ -2,7 +2,7 @@
 
 #include <iostream>
 
-namespace FGames::platform::win_platform
+namespace fgames::platform::win_platform
 {
 
 void WinTerminal::clear()

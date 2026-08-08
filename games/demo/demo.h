@@ -3,7 +3,7 @@
 #include "../../core/head/game.h"
 #include "../../core/head/renderer.h"
 
-namespace FGames::games
+namespace fgames::games
 {
 
 class DemoGame : public core::Game

@@ -2,7 +2,7 @@
 
 #include <unistd.h>
 
-namespace FGames::platform::linux_platform
+namespace fgames::platform::linux_platform
 {
 
 int LinuxInput::readRawByte()

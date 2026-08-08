@@ -1,6 +1,6 @@
 #include "snake.h"
 
-namespace FGames::games
+namespace fgames::games
 {
 
 SnakeGame::SnakeGame()
@@ -22,41 +22,41 @@ random_engine_(std::random_device{}())
 }
 
 void SnakeGame::handle_event(
-    const FGames::core::Event& event
+    const fgames::core::Event& event
 )
 {
-    if (event.type == FGames::core::EventType::QuitRequested)
+    if (event.type == fgames::core::EventType::QuitRequested)
     {
         return;
     }
 
-    if (event.type != FGames::core::EventType::KeyPressed)
+    if (event.type != fgames::core::EventType::KeyPressed)
         return;
 
     switch (event.key)
     {
-        case FGames::core::Key::Up:
+        case fgames::core::Key::Up:
 
             if (!is_opposite(direction_, Direction::Up))
                 next_direction_ = Direction::Up;
 
             break;
 
-        case FGames::core::Key::Down:
+        case fgames::core::Key::Down:
 
             if (!is_opposite(direction_, Direction::Down))
                 next_direction_ = Direction::Down;
 
             break;
 
-        case FGames::core::Key::Left:
+        case fgames::core::Key::Left:
 
             if (!is_opposite(direction_, Direction::Left))
                 next_direction_ = Direction::Left;
 
             break;
 
-        case FGames::core::Key::Right:
+        case fgames::core::Key::Right:
 
             if (!is_opposite(direction_, Direction::Right))
                 next_direction_ = Direction::Right;
@@ -195,7 +195,7 @@ bool SnakeGame::is_opposite(
 }
 
 void SnakeGame::render(
-    FGames::core::Renderer& renderer
+    fgames::core::Renderer& renderer
 )
 {
     renderer.clear();

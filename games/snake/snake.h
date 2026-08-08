@@ -7,7 +7,7 @@
 #include "../../core/head/event.h"
 #include "../../core/head/renderer.h"
 
-namespace FGames::games
+namespace fgames::games
 {
 
 struct Position
@@ -35,13 +35,13 @@ enum class SnakeState
     GameOver
 };
 
-class SnakeGame : public FGames::core::Game
+class SnakeGame : public fgames::core::Game
 {
 public:
     SnakeGame();
 
     void handle_event(
-        const FGames::core::Event& event
+        const fgames::core::Event& event
     ) override;
 
     void update(
@@ -49,7 +49,7 @@ public:
     ) override;
 
     void render(
-        FGames::core::Renderer& renderer
+        fgames::core::Renderer& renderer
     ) override;
 
 private:

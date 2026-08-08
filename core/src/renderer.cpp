@@ -1,6 +1,6 @@
 #include "../head/renderer.h"
 
-namespace FGames::core
+namespace fgames::core
 {
 
 Renderer::Renderer(

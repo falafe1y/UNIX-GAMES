@@ -1,6 +1,6 @@
 #include "../head/timer.h"
 
-namespace FGames::core
+namespace fgames::core
 {
 
 float Timer::delta_time()

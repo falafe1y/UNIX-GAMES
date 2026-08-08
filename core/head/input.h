@@ -3,7 +3,7 @@
 #include <vector>
 #include "event.h"
 
-namespace FGames::core
+namespace fgames::core
 {
 
 class Input

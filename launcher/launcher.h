@@ -7,7 +7,7 @@
 #include "../games/demo/demo.h"
 #include "../games/snake/snake.h"
 
-namespace FGames::launcher
+namespace fgames::launcher
 {
 
 class Launcher
@@ -18,8 +18,8 @@ public:
     void run();
 
 private:
-    std::unique_ptr<FGames::core::Game> currentGame_;
-    FGames::core::Engine engine_;
+    std::unique_ptr<fgames::core::Game> currentGame_;
+    fgames::core::Engine engine_;
 };
 
 }

@@ -3,7 +3,7 @@
 #include <chrono>
 
 
-namespace FGames::core
+namespace fgames::core
 {
 
 class Timer

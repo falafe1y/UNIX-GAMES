@@ -17,7 +17,7 @@
 #endif
 
 
-namespace FGames::core
+namespace fgames::core
 {
 
 Engine::Engine()
@@ -27,12 +27,12 @@ Engine::Engine()
     :
     input_(
         std::make_unique<
-            FGames::platform::linux_platform::LinuxInput
+            fgames::platform::linux_platform::LinuxInput
         >()
     ),
     terminal_(
         std::make_unique<
-            FGames::platform::linux_platform::LinuxTerminal
+            fgames::platform::linux_platform::LinuxTerminal
         >()
     ),
     renderer_(
@@ -46,12 +46,12 @@ Engine::Engine()
     :
     input_(
         std::make_unique<
-            FGames::platform::win_platform::WinInput
+            fgames::platform::win_platform::WinInput
         >()
     ),
     terminal_(
         std::make_unique<
-            FGames::platform::win_platform::WinTerminal
+            fgames::platform::win_platform::WinTerminal
         >()
     ),
     renderer_(

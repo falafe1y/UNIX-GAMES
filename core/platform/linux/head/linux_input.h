@@ -2,7 +2,7 @@
 
 #include "../../../head/input.h"
 
-namespace FGames::platform::linux_platform
+namespace fgames::platform::linux_platform
 {
 
 class LinuxInput final : public core::Input

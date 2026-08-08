@@ -3,7 +3,7 @@
 #include <unistd.h>
 #include <iostream>
 
-namespace FGames::platform::linux_platform
+namespace fgames::platform::linux_platform
 {
 
 LinuxTerminal::LinuxTerminal()

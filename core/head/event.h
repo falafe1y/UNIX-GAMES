@@ -1,6 +1,6 @@
 #pragma once
 
-namespace FGames::core
+namespace fgames::core
 {
 
 enum class EventType
