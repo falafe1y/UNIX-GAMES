@@ -17,6 +17,7 @@ add_executable(
     core/src/timer.cpp
 
     core/platform/linux/src/terminal.cpp
+    core/platform/linux/src/input.cpp
 
     games/demo/demo.cpp
 )
