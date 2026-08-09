@@ -21,34 +21,103 @@ void SnakeGame::handle_event(
     const fgames::core::Event& event
 )
 {
-    if (event.type == fgames::core::EventType::QuitRequested) return;
-    if (event.type != fgames::core::EventType::KeyPressed) return;
+    if (event.type == fgames::core::EventType::QuitRequested)
+        return;
 
-    // game over mode
+    if (event.type != fgames::core::EventType::KeyPressed)
+        return;
+
+    // =========================================================
+    // PAUSED
+    // =========================================================
+
+    if (state_ == SnakeState::Paused)
+    {
+        switch (event.key)
+        {
+            case fgames::core::EventKey::Left:
+            case fgames::core::EventKey::Up:
+
+                // Yes
+                menu_selection_ = true;
+
+                break;
+
+            case fgames::core::EventKey::Right:
+            case fgames::core::EventKey::Down:
+
+                // No
+                menu_selection_ = false;
+
+                break;
+
+            case fgames::core::EventKey::Enter:
+
+                if (menu_selection_)
+                {
+                    // Хотим выйти в меню.
+                    result_ = fgames::core::GameResult::ExitToMenu;
+                }
+                else
+                {
+                    // Продолжаем игру.
+                    state_ = SnakeState::Running;
+
+                    // Начинаем отсчёт времени заново.
+                    move_timer_ = 0.0f;
+                }
+
+                break;
+
+            case fgames::core::EventKey::Escape:
+
+                // Escape = No
+                state_ = SnakeState::Running;
+
+                menu_selection_ = false;
+                move_timer_ = 0.0f;
+
+                break;
+
+            default:
+                break;
+        }
+
+        return;
+    }
+
+    // =========================================================
+    // GAME OVER
+    // =========================================================
+
     if (state_ == SnakeState::GameOver)
     {
         switch (event.key)
         {
             case fgames::core::EventKey::Left:
             case fgames::core::EventKey::Up:
-                restart_after_gameover_ = true;
+
+                // Restart
+                menu_selection_ = true;
+
                 break;
 
             case fgames::core::EventKey::Right:
             case fgames::core::EventKey::Down:
-                restart_after_gameover_ = false;
+
+                // Exit to menu
+                menu_selection_ = false;
                 break;
 
             case fgames::core::EventKey::Enter:
-                if (restart_after_gameover_)
+
+                if (menu_selection_)
                 {
                     restart();
                 }
                 else
                 {
-                    // Пока просто ничего не делаем.
-                    // Позже здесь можно будет сообщить Launcher,
-                    // что пользователь хочет выйти в главное меню.
+                    result_ = fgames::core::GameResult::ExitToMenu;
                 }
 
                 break;
@@ -60,32 +129,59 @@ void SnakeGame::handle_event(
         return;
     }
 
-    // main mode
+    // =========================================================
+    // RUNNING
+    // =========================================================
+
     switch (event.key)
     {
+        case fgames::core::EventKey::Escape:
+
+            // Переходим на паузу.
+            state_ = SnakeState::Paused;
+
+            // По умолчанию выбираем No.
+            menu_selection_ = false;
+
+            break;
+
+
         case fgames::core::EventKey::Up:
-            if (!is_opposite(direction_, Direction::Up)) {
+            if (!is_opposite(
+                    direction_,
+                    Direction::Up))
+            {
                 next_direction_ = Direction::Up;
             }
 
             break;
 
+
         case fgames::core::EventKey::Down:
-            if (!is_opposite(direction_, Direction::Down)) {
+            if (!is_opposite(
+                    direction_,
+                    Direction::Down))
+            {
                 next_direction_ = Direction::Down;
             }
 
             break;
 
         case fgames::core::EventKey::Left:
-            if (!is_opposite(direction_, Direction::Left)) {
+            if (!is_opposite(
+                    direction_,
+                    Direction::Left))
+            {
                 next_direction_ = Direction::Left;
             }
 
             break;
 
         case fgames::core::EventKey::Right:
-            if (!is_opposite(direction_, Direction::Right)) {
+            if (!is_opposite(
+                    direction_,
+                    Direction::Right))
+            {
                 next_direction_ = Direction::Right;
             }
 
@@ -138,6 +234,9 @@ void SnakeGame::move()
     if (is_collision(head))
     {
         state_ = SnakeState::GameOver;
+
+        // по умолчанию предлагаем Restart
+        menu_selection_ = true;
         return;
     }
 
@@ -220,9 +319,14 @@ void SnakeGame::restart()
 
     move_timer_ = 0.0f;
 
-    restart_after_gameover_ = true;
+    menu_selection_ = false;
 
     spawn_food();
+}
+
+bool SnakeGame::is_paused() const
+{
+    return state_ != SnakeState::Running;
 }
 
 void SnakeGame::render(fgames::core::Renderer& renderer)
@@ -244,9 +348,18 @@ void SnakeGame::render(fgames::core::Renderer& renderer)
         is_head = false;
     }
 
+    if (state_ == SnakeState::Paused)
+    {
+        renderer.draw_exit_confirmation(
+            menu_selection_
+        );
+    }
+    
     if (state_ == SnakeState::GameOver)
     {
-        renderer.draw_gameover(restart_after_gameover_);
+        renderer.draw_gameover(
+            menu_selection_
+        );
     }
 
     renderer.present();

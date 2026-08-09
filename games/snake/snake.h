@@ -33,6 +33,7 @@ enum class Direction
 enum class SnakeState
 {
     Running,
+    Paused,
     GameOver
 };
 
@@ -44,6 +45,7 @@ public:
     void handle_event(const fgames::core::Event& event) override;
     void update(float delta_time) override;
     void render(fgames::core::Renderer& renderer) override;
+    bool is_paused() const override;
 
 private:
     void move();
@@ -53,16 +55,16 @@ private:
     void restart();
 
 private:
-    bool restart_after_gameover_ = true;
+    SnakeState state_{SnakeState::Running};
+
+    // false = No
+    // true  = Yes
+    bool menu_selection_{false};
 
     std::deque<Position> snake_;
-
     Position food_;
-
     Direction direction_;
     Direction next_direction_;
-
-    SnakeState state_;
 
     float move_timer_;
     float move_interval_;

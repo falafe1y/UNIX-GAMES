@@ -101,18 +101,18 @@ void Renderer::draw_gameover(bool selected_option)
         "+--------------------------------------+";
 
     const std::string line2 =
-        "| Game Over!                            |";
+        "|              Game Over!              |";
 
     const std::string line3 =
-        "|       and lose all your experience?  |";
+        "|       Do you want to restart?        |";
 
     const std::string line4 =
         "|                                      |";
 
     const std::string line5 =
         selected_option
-            ? "|          [ Yes ]     No              |"
-            : "|            Yes     [ No ]            |";
+        ? "|          [ Yes ]     No              |"
+        : "|            Yes     [ No ]            |";
 
     const std::string line6 =
         "|                                      |";

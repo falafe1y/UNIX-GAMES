@@ -10,5 +10,3 @@ else
     cmake ..
     cmake --build .
 fi
-
-./FGames

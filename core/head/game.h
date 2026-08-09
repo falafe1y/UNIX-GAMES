@@ -5,6 +5,12 @@
 namespace fgames::core
 {
 
+enum class GameResult
+{
+    Continue,
+    ExitToMenu
+};
+
 class Renderer;
 
 class Game
@@ -22,6 +28,16 @@ public:
 
     // отрисовка
     virtual void render(Renderer& renderer) = 0;
+
+    GameResult result() const
+    {
+        return result_;
+    }
+
+    virtual bool is_paused() const = 0;
+
+protected:
+    GameResult result_ = GameResult::Continue;
 };
 
 }
