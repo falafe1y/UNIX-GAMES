@@ -27,7 +27,6 @@ private:
 
     void handle_game_events(Game& game, const std::vector<Event>& events);
     void handle_confirmation_events(const std::vector<Event>& events);
-    void render_confirmation();
 
 private:
     bool running_{true};

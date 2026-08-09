@@ -17,6 +17,8 @@ bool Engine::run(Game& game)
     exit_confirmed_ = false;
     confirmation_selection_ = false;
 
+    timer_.reset();
+
     while (running_)
     {
         if (state_ == State::Playing)
@@ -36,9 +38,13 @@ bool Engine::run(Game& game)
             }
             else if (state_ == State::ConfirmExit)
             {
-                // Игра уже отрисована.
-                // Просто накладываем плашку.
-                render_confirmation();
+                // Игра уже была отрисована.
+                // Накладываем плашку поверх текущего кадра.
+                renderer_.draw_exit_confirmation(
+                    confirmation_selection_
+                );
+
+                renderer_.present();
             }
         }
         else if (state_ == State::ConfirmExit)
@@ -78,7 +84,8 @@ void Engine::handle_game_events(Game& game, const std::vector<Event>& events)
     }
 }
 
-void Engine::handle_confirmation_events(const std::vector<Event>& events)
+void Engine::handle_confirmation_events(
+    const std::vector<Event>& events)
 {
     for (const auto& event : events)
     {
@@ -100,7 +107,12 @@ void Engine::handle_confirmation_events(const std::vector<Event>& events)
                 if (confirmation_selection_)
                 {
                     confirmation_selection_ = false;
-                    render_confirmation();
+
+                    renderer_.draw_exit_confirmation(
+                        confirmation_selection_
+                    );
+
+                    renderer_.present();
                 }
 
                 break;
@@ -111,7 +123,12 @@ void Engine::handle_confirmation_events(const std::vector<Event>& events)
                 if (!confirmation_selection_)
                 {
                     confirmation_selection_ = true;
-                    render_confirmation();
+
+                    renderer_.draw_exit_confirmation(
+                        confirmation_selection_
+                    );
+
+                    renderer_.present();
                 }
 
                 break;
@@ -128,107 +145,22 @@ void Engine::handle_confirmation_events(const std::vector<Event>& events)
                 {
                     // No
                     state_ = State::Playing;
-
-                    // ВАЖНО:
-                    // сбрасываем накопившееся время паузы.
-                    timer_.delta_time();
+                    timer_.reset();
                 }
 
                 break;
 
             case EventKey::Escape:
 
-                // Esc = No
+                // Escape = No
                 state_ = State::Playing;
-
-                // Не даём времени паузы
-                // попасть в следующий update().
-                timer_.delta_time();
-
+                timer_.reset();
                 break;
 
             default:
                 break;
         }
     }
-}
-
-void Engine::render_confirmation()
-{
-    const int width = 54;
-    const int height = 7;
-
-    const int world_width =
-        WorldConfig().world_width;
-
-    const int world_height =
-        WorldConfig().world_height;
-
-    const int start_x =
-        (world_width - width) / 2;
-
-    const int start_y =
-        (world_height - height) / 2;
-
-    // Если поле слишком маленькое,
-    // просто начинаем с координаты 0.
-    const int x = start_x < 0 ? 0 : start_x;
-    const int y = start_y < 0 ? 0 : start_y;
-
-    renderer_.draw_text(
-        x,
-        y,
-        "+----------------------------------------------------+"
-    );
-
-    renderer_.draw_text(
-        x,
-        y + 1,
-        "| Do you really want to close the game and loss all |"
-    );
-
-    renderer_.draw_text(
-        x,
-        y + 2,
-        "| your experience?                                   |"
-    );
-
-    renderer_.draw_text(
-        x,
-        y + 3,
-        "|                                                    |"
-    );
-
-    if (confirmation_selection_)
-    {
-        renderer_.draw_text(
-            x,
-            y + 4,
-            "|             [ Yes ]       No                      |"
-        );
-    }
-    else
-    {
-        renderer_.draw_text(
-            x,
-            y + 4,
-            "|               Yes       [ No ]                    |"
-        );
-    }
-
-    renderer_.draw_text(
-        x,
-        y + 5,
-        "|                                                    |"
-    );
-
-    renderer_.draw_text(
-        x,
-        y + 6,
-        "+----------------------------------------------------+"
-    );
-
-    renderer_.present();
 }
 
 }

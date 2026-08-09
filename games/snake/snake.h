@@ -41,33 +41,20 @@ class SnakeGame : public fgames::core::Game
 public:
     SnakeGame();
 
-    void handle_event(
-        const fgames::core::Event& event
-    ) override;
-
-    void update(
-        float delta_time
-    ) override;
-
-    void render(
-        fgames::core::Renderer& renderer
-    ) override;
+    void handle_event(const fgames::core::Event& event) override;
+    void update(float delta_time) override;
+    void render(fgames::core::Renderer& renderer) override;
 
 private:
     void move();
-
     void spawn_food();
-
-    bool is_collision(
-        const Position& position
-    ) const;
-
-    bool is_opposite(
-        Direction first,
-        Direction second
-    ) const;
+    bool is_collision(const Position& position) const;
+    bool is_opposite(Direction first, Direction second) const;
+    void restart();
 
 private:
+    bool restart_after_gameover_ = true;
+
     std::deque<Position> snake_;
 
     Position food_;

@@ -11,4 +11,9 @@ float Timer::delta_time()
     return elapsed.count();
 }
 
+void Timer::reset()
+{
+    lastTime_ = std::chrono::steady_clock::now();
+}
+
 }

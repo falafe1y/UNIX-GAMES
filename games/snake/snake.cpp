@@ -24,6 +24,43 @@ void SnakeGame::handle_event(
     if (event.type == fgames::core::EventType::QuitRequested) return;
     if (event.type != fgames::core::EventType::KeyPressed) return;
 
+    // game over mode
+    if (state_ == SnakeState::GameOver)
+    {
+        switch (event.key)
+        {
+            case fgames::core::EventKey::Left:
+            case fgames::core::EventKey::Up:
+                restart_after_gameover_ = true;
+                break;
+
+            case fgames::core::EventKey::Right:
+            case fgames::core::EventKey::Down:
+                restart_after_gameover_ = false;
+                break;
+
+            case fgames::core::EventKey::Enter:
+                if (restart_after_gameover_)
+                {
+                    restart();
+                }
+                else
+                {
+                    // Пока просто ничего не делаем.
+                    // Позже здесь можно будет сообщить Launcher,
+                    // что пользователь хочет выйти в главное меню.
+                }
+
+                break;
+
+            default:
+                break;
+        }
+
+        return;
+    }
+
+    // main mode
     switch (event.key)
     {
         case fgames::core::EventKey::Up:
@@ -61,11 +98,13 @@ void SnakeGame::handle_event(
 
 void SnakeGame::update(float delta_time)
 {
-    if (state_ == SnakeState::GameOver) return;
+    if (state_ == SnakeState::GameOver) 
+        return;
 
     move_timer_ += delta_time;
 
-    if (move_timer_ < move_interval_) return;
+    if (move_timer_ < move_interval_) 
+        return;
 
     move_timer_ -= move_interval_;
     direction_ = next_direction_;
@@ -168,6 +207,24 @@ bool SnakeGame::is_opposite(Direction first, Direction second) const
          second == Direction::Left);
 }
 
+void SnakeGame::restart()
+{
+    snake_.clear();
+
+    snake_.push_back({2, 2});
+
+    direction_ = Direction::Right;
+    next_direction_ = Direction::Right;
+
+    state_ = SnakeState::Running;
+
+    move_timer_ = 0.0f;
+
+    restart_after_gameover_ = true;
+
+    spawn_food();
+}
+
 void SnakeGame::render(fgames::core::Renderer& renderer)
 {
     renderer.clear();
@@ -185,6 +242,11 @@ void SnakeGame::render(fgames::core::Renderer& renderer)
         renderer.draw(segment.x, segment.y, is_head ? '@' : 'o');
 
         is_head = false;
+    }
+
+    if (state_ == SnakeState::GameOver)
+    {
+        renderer.draw_gameover(restart_after_gameover_);
     }
 
     renderer.present();

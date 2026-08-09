@@ -50,6 +50,96 @@ void Renderer::draw_text(int x, int y, const std::string& text)
     }
 }
 
+void Renderer::draw_exit_confirmation(bool selected_option)
+{
+    const std::string line1 =
+        "+--------------------------------------+";
+
+    const std::string line2 =
+        "| Do you really want to close the game?|";
+
+    const std::string line3 =
+        "|       and lose all your experience?  |";
+
+    const std::string line4 =
+        "|                                      |";
+
+    const std::string line5 =
+        selected_option
+            ? "|          [ Yes ]     No              |"
+            : "|            Yes     [ No ]            |";
+
+    const std::string line6 =
+        "|                                      |";
+
+    const std::string line7 =
+        "+--------------------------------------+";
+
+    const int box_width =
+        static_cast<int>(line1.size());
+
+    const int box_height = 7;
+
+    const int start_x =
+        (width_ - box_width) / 2;
+
+    const int start_y =
+        (height_ - box_height) / 2;
+
+    draw_text(start_x, start_y,     line1);
+    draw_text(start_x, start_y + 1, line2);
+    draw_text(start_x, start_y + 2, line3);
+    draw_text(start_x, start_y + 3, line4);
+    draw_text(start_x, start_y + 4, line5);
+    draw_text(start_x, start_y + 5, line6);
+    draw_text(start_x, start_y + 6, line7);
+}
+
+void Renderer::draw_gameover(bool selected_option)
+{
+    const std::string line1 =
+        "+--------------------------------------+";
+
+    const std::string line2 =
+        "| Game Over!                            |";
+
+    const std::string line3 =
+        "|       and lose all your experience?  |";
+
+    const std::string line4 =
+        "|                                      |";
+
+    const std::string line5 =
+        selected_option
+            ? "|          [ Yes ]     No              |"
+            : "|            Yes     [ No ]            |";
+
+    const std::string line6 =
+        "|                                      |";
+
+    const std::string line7 =
+        "+--------------------------------------+";
+
+    const int box_width =
+        static_cast<int>(line1.size());
+
+    const int box_height = 7;
+
+    const int start_x =
+        (width_ - box_width) / 2;
+
+    const int start_y =
+        (height_ - box_height) / 2;
+
+    draw_text(start_x, start_y,     line1);
+    draw_text(start_x, start_y + 1, line2);
+    draw_text(start_x, start_y + 2, line3);
+    draw_text(start_x, start_y + 3, line4);
+    draw_text(start_x, start_y + 4, line5);
+    draw_text(start_x, start_y + 5, line6);
+    draw_text(start_x, start_y + 6, line7);
+}
+
 void Renderer::present()
 {
     terminal_.move_cursor(0, 0);
