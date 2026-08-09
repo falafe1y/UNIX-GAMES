@@ -3,12 +3,10 @@
 namespace fgames::core
 {
 
-Renderer::Renderer(int width, int height, Terminal& terminal)
+Renderer::Renderer(Terminal& terminal)
     :
-    width_(width),
-    height_(height),
     terminal_(terminal),
-    buffer_(height, std::string(width, ' '))
+    buffer_(height_, std::string(width_, ' '))
 {
 }
 

@@ -10,13 +10,9 @@ next_direction_(Direction::Right),
 state_(SnakeState::Running),
 move_timer_(0.0f),
 move_interval_(0.15f),
-field_width_(40),
-field_height_(20),
 random_engine_(std::random_device{}())
 {
-    snake_.push_back({20, 10});
-    snake_.push_back({19, 10});
-    snake_.push_back({18, 10});
+    snake_.push_back({2, 2});
 
     spawn_food();
 }

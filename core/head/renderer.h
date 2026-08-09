@@ -1,6 +1,7 @@
 #pragma once
 
 #include "terminal.h"
+#include <world_configuation.h>
 
 #include <string>
 #include <vector>
@@ -11,7 +12,7 @@ namespace fgames::core
 class Renderer
 {
 public:
-    Renderer(int width, int height, Terminal& terminal);
+    Renderer(Terminal& terminal);
 
     void clear();
     void draw(int x, int y, char symbol);
@@ -19,8 +20,8 @@ public:
     void present();
 
 private:
-    int width_;
-    int height_;
+    int width_ = WorldConfig().world_width;
+    int height_ = WorldConfig().world_height;
     Terminal& terminal_;
     std::vector<std::string> buffer_;
 };

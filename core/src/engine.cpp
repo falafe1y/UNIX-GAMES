@@ -25,13 +25,13 @@ Engine::Engine()
     :
     input_(std::make_unique<fgames::platform::linux_platform::LinuxInput>()),
     terminal_(std::make_unique<fgames::platform::linux_platform::LinuxTerminal>()),
-    renderer_(40, 20, *terminal_)
+    renderer_(*terminal_)
 
 #elif defined(FGames_PLATFORM_WINDOWS)
     :
     input_(std::make_unique<fgames::platform::win_platform::WinInput>()),
     terminal_(std::make_unique<fgames::platform::win_platform::WinTerminal>()),
-    renderer_(40, 20, *terminal_)
+    renderer_(*terminal_)
 
 #endif
 
