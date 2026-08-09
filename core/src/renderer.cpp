@@ -42,6 +42,14 @@ void Renderer::draw_border()
     }
 }
 
+void Renderer::draw_text(int x, int y, const std::string& text)
+{
+    for (std::size_t i = 0; i < text.size(); ++i)
+    {
+        draw(x + static_cast<int>(i), y, text[i]);
+    }
+}
+
 void Renderer::present()
 {
     terminal_.move_cursor(0, 0);

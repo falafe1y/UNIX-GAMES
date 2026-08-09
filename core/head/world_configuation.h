@@ -2,6 +2,6 @@
 
 struct WorldConfig
 {
-    int world_width = 10;
-    int world_height = 5;
+    int world_width = 100;
+    int world_height = 50;
 };

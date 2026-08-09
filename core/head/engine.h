@@ -3,8 +3,8 @@
 #include "game.h"
 #include "input.h"
 #include "renderer.h"
-#include "terminal.h"
 #include "timer.h"
+// #include "terminal.h"
 
 #include <memory>
 
@@ -14,16 +14,32 @@ namespace fgames::core
 class Engine
 {
 public:
-    Engine();
+    Engine(Input& input, Renderer& renderer);
 
-    void run(Game& game);
+    bool run(Game& game);
+
+private:
+    enum class State
+    {
+        Playing,
+        ConfirmExit
+    };
+
+    void handle_game_events(Game& game, const std::vector<Event>& events);
+    void handle_confirmation_events(const std::vector<Event>& events);
+    void render_confirmation();
 
 private:
     bool running_{true};
-    std::unique_ptr<Input> input_;
-    std::unique_ptr<Terminal> terminal_;
-    Renderer renderer_;
+    Input& input_;
+    Renderer& renderer_;
     Timer timer_;
+    
+    // false = No
+    // true  = Yes
+    State state_{State::Playing};
+    bool confirmation_selection_{false};
+    bool exit_confirmed_{false};
 };
 
 }

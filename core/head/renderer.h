@@ -17,6 +17,7 @@ public:
     void clear();
     void draw(int x, int y, char symbol);
     void draw_border();
+    void draw_text(int x, int y, const std::string& text);
     void present();
 
 private:
