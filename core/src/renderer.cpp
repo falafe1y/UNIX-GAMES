@@ -1,5 +1,11 @@
 #include "../head/renderer.h"
 
+#include <algorithm>
+#include <string>
+#include <vector>
+
+#include <ftxui/dom/elements.hpp>
+
 namespace fgames::core
 {
 
@@ -21,6 +27,8 @@ void Renderer::clear()
     {
         row.assign(width_, ' ');
     }
+
+    overlay_ = ftxui::text("");
 }
 
 void Renderer::draw(
@@ -40,6 +48,9 @@ void Renderer::draw(
 
 void Renderer::draw_border()
 {
+    if (width_ <= 0 || height_ <= 0)
+        return;
+
     // Верхняя и нижняя границы.
     for (int x = 0; x < width_; ++x)
     {
@@ -75,101 +86,127 @@ void Renderer::draw_exit_confirmation(
     bool selected_option
 )
 {
-    const std::string line1 =
-        "+--------------------------------------+";
+    using namespace ftxui;
 
-    const std::string line2 =
-        "| Do you really want to close the game?|";
-
-    const std::string line3 =
-        "|       and lose all your experience?  |";
-
-    const std::string line4 =
-        "|                                      |";
-
-    const std::string line5 =
+    const auto yes =
         selected_option
-            ? "|          [ Yes ]     No              |"
-            : "|            Yes     [ No ]            |";
+            ? text(" Yes ")
+                | bold
+                | color(Color::Black)
+                | bgcolor(Color::Green)
+            : text(" Yes ")
+                | color(Color::White);
 
-    const std::string line6 =
-        "|                                      |";
+    const auto no =
+        !selected_option
+            ? text(" No ")
+                | bold
+                | color(Color::Black)
+                | bgcolor(Color::Red)
+            : text(" No ")
+                | color(Color::White);
 
-    const std::string line7 =
-        "+--------------------------------------+";
+    overlay_ =
+        window(
+            text(" Exit game? ")
+                | bold
+                | color(Color::Yellow)
+                | center,
 
-    const int box_width =
-        static_cast<int>(line1.size());
+            vbox({
+                text("Do you really want to leave?")
+                    | center,
 
-    const int box_height = 7;
+                text("Your current game will be lost.")
+                    | dim
+                    | center,
 
-    const int start_x =
-        (width_ - box_width) / 2;
+                separator(),
 
-    const int start_y =
-        (height_ - box_height) / 2;
+                hbox({
+                    yes,
+                    text("     "),
+                    no
+                })
+                | center,
 
-    draw_text(start_x, start_y,     line1);
-    draw_text(start_x, start_y + 1, line2);
-    draw_text(start_x, start_y + 2, line3);
-    draw_text(start_x, start_y + 3, line4);
-    draw_text(start_x, start_y + 4, line5);
-    draw_text(start_x, start_y + 5, line6);
-    draw_text(start_x, start_y + 6, line7);
+                separator(),
+
+                text("←/↑/↓/→  Select    Enter  Confirm")
+                    | dim
+                    | center
+            })
+            | center
+        )
+        | center;
 }
 
 void Renderer::draw_gameover(
     bool selected_option
 )
 {
-    const std::string line1 =
-        "+--------------------------------------+";
+    using namespace ftxui;
 
-    const std::string line2 =
-        "|              Game Over!              |";
-
-    const std::string line3 =
-        "|       Do you want to restart?        |";
-
-    const std::string line4 =
-        "|                                      |";
-
-    const std::string line5 =
+    const auto restart =
         selected_option
-            ? "|          [ Yes ]     No              |"
-            : "|            Yes     [ No ]            |";
+            ? text(" Restart ")
+                | bold
+                | color(Color::Black)
+                | bgcolor(Color::Green)
+            : text(" Restart ")
+                | color(Color::White);
 
-    const std::string line6 =
-        "|                                      |";
+    const auto menu =
+        !selected_option
+            ? text(" Menu ")
+                | bold
+                | color(Color::Black)
+                | bgcolor(Color::Red)
+            : text(" Menu ")
+                | color(Color::White);
 
-    const std::string line7 =
-        "+--------------------------------------+";
+    overlay_ =
+        window(
+            text(" GAME OVER ")
+                | bold
+                | color(Color::Red)
+                | center,
 
-    const int box_width =
-        static_cast<int>(line1.size());
+            vbox({
+                text("The snake has crashed.")
+                    | center,
 
-    const int box_height = 7;
+                text("What would you like to do?")
+                    | dim
+                    | center,
 
-    const int start_x =
-        (width_ - box_width) / 2;
+                separator(),
 
-    const int start_y =
-        (height_ - box_height) / 2;
+                hbox({
+                    restart,
+                    text("     "),
+                    menu
+                })
+                | center,
 
-    draw_text(start_x, start_y,     line1);
-    draw_text(start_x, start_y + 1, line2);
-    draw_text(start_x, start_y + 2, line3);
-    draw_text(start_x, start_y + 3, line4);
-    draw_text(start_x, start_y + 4, line5);
-    draw_text(start_x, start_y + 5, line6);
-    draw_text(start_x, start_y + 6, line7);
+                separator(),
+
+                text("←/↑/↓/→  Select    Enter  Confirm")
+                    | dim
+                    | center
+            })
+            | center
+        )
+        | center;
 }
 
-void Renderer::present()
+ftxui::Element Renderer::build_game_field() const
 {
     using namespace ftxui;
 
     Elements rows;
+
+    rows.reserve(buffer_.size());
 
     for (const auto& row : buffer_)
     {
@@ -178,8 +215,30 @@ void Renderer::present()
         );
     }
 
-    auto document =
-        vbox(rows);
+    return vbox(rows);
+}
+
+void Renderer::present()
+{
+    using namespace ftxui;
+
+    auto game =
+        build_game_field();
+
+    Element document;
+
+    if (overlay_)
+    {
+        document =
+            dbox({
+                game,
+                overlay_
+            });
+    }
+    else
+    {
+        document = game;
+    }
 
     screen_.Clear();
 
@@ -189,8 +248,17 @@ void Renderer::present()
     );
 
     screen_.ResetPosition();
-
     screen_.Print();
+}
+
+int Renderer::width() const
+{
+    return width_;
+}
+
+int Renderer::height() const
+{
+    return height_;
 }
 
 }
