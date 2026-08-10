@@ -81,6 +81,13 @@ std::vector<core::Event> LinuxInput::poll()
         return events;
     }
 
+    // Space
+    if (c == ' ')
+    {
+        events.push_back({core::EventType::KeyPressed, core::EventKey::Space});
+        return events;
+    }
+
     return events;
 }
 
