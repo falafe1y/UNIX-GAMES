@@ -11,12 +11,12 @@
 namespace fgames::games
 {
 
-struct Position
+struct SnakePosition
 {
     int x;
     int y;
 
-    bool operator==(const Position& other) const
+    bool operator==(const SnakePosition& other) const
     {
         return x == other.x && y == other.y;
     }
@@ -50,7 +50,7 @@ public:
 private:
     void move();
     void spawn_food();
-    bool is_collision(const Position& position) const;
+    bool is_collision(const SnakePosition& position) const;
     bool is_opposite(Direction first, Direction second) const;
     void restart();
 
@@ -61,16 +61,16 @@ private:
     // true  = Yes
     bool menu_selection_{false};
 
-    std::deque<Position> snake_;
-    Position food_;
+    std::deque<SnakePosition> snake_;
+    SnakePosition food_;
     Direction direction_;
     Direction next_direction_;
 
     float move_timer_;
     float move_interval_;
 
-    int field_width_ = WorldConfig().world_width;
-    int field_height_ = WorldConfig().world_height;
+    const int FIELD_WITDH_ = WorldConfig().world_width;
+    const int FIELD_HEIGHT_ = WorldConfig().world_height;
 
     std::mt19937 random_engine_;
 };

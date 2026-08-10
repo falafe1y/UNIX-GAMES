@@ -18,6 +18,8 @@ enum class EventKey
     Left,
     Right,
 
+    Space,
+
     Enter,
     Escape
 };

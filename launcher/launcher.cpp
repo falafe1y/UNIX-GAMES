@@ -41,18 +41,17 @@ engine_(*input_, renderer_)
     games_ =
     {
         {
-            "Snake",
-            [] {
-                return std::make_unique<fgames::games::SnakeGame>();
-            }
+            "Snake", [] {return std::make_unique<fgames::games::SnakeGame>();}
         },
 
         {
-            "Demo",
-            [] {
-                return std::make_unique<fgames::games::DemoGame>();
-            }
+            "Demo", [] {return std::make_unique<fgames::games::DemoGame>();}
+        },
+
+        {
+            "Tetris", [] {return std::make_unique<fgames::games::TetrisGame>();}
         }
+
     };
 }
 

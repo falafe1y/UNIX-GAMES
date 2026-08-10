@@ -56,6 +56,7 @@ add_executable(FGames
 
     games/demo/demo.cpp
     games/snake/snake.cpp
+    games/tetris/tetris.cpp
 
     ${PLATFORM_SOURCES}
 )

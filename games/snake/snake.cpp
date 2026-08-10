@@ -210,7 +210,7 @@ void SnakeGame::update(float delta_time)
 
 void SnakeGame::move()
 {
-    Position head = snake_.front();
+    SnakePosition head = snake_.front();
 
     switch (direction_)
     {
@@ -252,13 +252,13 @@ void SnakeGame::move()
     }
 }
 
-bool SnakeGame::is_collision(const Position& position) const
+bool SnakeGame::is_collision(const SnakePosition& SnakePosition) const
 {
     // Столкновение со стеной.
-    if (position.x <= 0 ||
-        position.x >= field_width_ - 1 ||
-        position.y <= 0 ||
-        position.y >= field_height_ - 1)
+    if (SnakePosition.x <= 0 ||
+        SnakePosition.x >= FIELD_WITDH_ - 1 ||
+        SnakePosition.y <= 0 ||
+        SnakePosition.y >= FIELD_HEIGHT_ - 1)
     {
         return true;
     }
@@ -266,7 +266,7 @@ bool SnakeGame::is_collision(const Position& position) const
     // Столкновение с собственным телом.
     for (const auto& segment : snake_)
     {
-        if (segment == position)
+        if (segment == SnakePosition)
             return true;
     }
 
@@ -275,10 +275,10 @@ bool SnakeGame::is_collision(const Position& position) const
 
 void SnakeGame::spawn_food()
 {
-    std::uniform_int_distribution<int> x_distribution(1, field_width_ - 2);
-    std::uniform_int_distribution<int> y_distribution(1, field_height_ - 2);
+    std::uniform_int_distribution<int> x_distribution(1, FIELD_WITDH_ - 2);
+    std::uniform_int_distribution<int> y_distribution(1, FIELD_HEIGHT_ - 2);
 
-    Position new_food;
+    SnakePosition new_food;
 
     do
     {

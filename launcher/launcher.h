@@ -13,6 +13,7 @@
 
 #include "../games/demo/demo.h"
 #include "../games/snake/snake.h"
+#include "../games/tetris/tetris.h"
 
 namespace fgames::launcher
 {
