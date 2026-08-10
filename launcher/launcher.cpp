@@ -158,7 +158,7 @@ void Launcher::render_menu()
         }
     }
 
-    renderer_.present();
+    renderer_.present_menu();
 }
 
 }

@@ -40,7 +40,11 @@ public:
         bool selected_option
     );
 
+    // Игровой экран.
     void present();
+
+    // Экран лаунчера.
+    void present_menu();
 
     int width() const;
     int height() const;
@@ -48,17 +52,14 @@ public:
 private:
     ftxui::Element build_game_field() const;
 
-    ftxui::Element build_exit_confirmation(
-        bool selected_option
-    ) const;
-
-    ftxui::Element build_gameover(
-        bool selected_option
-    ) const;
+    ftxui::Element build_menu() const;
 
 private:
-    int width_ = WorldConfig().world_width;
-    int height_ = WorldConfig().world_height;
+    int width_ =
+        WorldConfig().world_width;
+
+    int height_ =
+        WorldConfig().world_height;
 
     std::vector<std::string> buffer_;
 

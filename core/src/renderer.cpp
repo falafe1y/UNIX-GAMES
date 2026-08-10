@@ -1,9 +1,5 @@
 #include "../head/renderer.h"
 
-#include <algorithm>
-#include <string>
-#include <vector>
-
 #include <ftxui/dom/elements.hpp>
 
 namespace fgames::core
@@ -20,6 +16,10 @@ screen_(
 )
 {
 }
+
+// ============================================================
+// BUFFER
+// ============================================================
 
 void Renderer::clear()
 {
@@ -82,6 +82,10 @@ void Renderer::draw_text(
     }
 }
 
+// ============================================================
+// EXIT CONFIRMATION
+// ============================================================
+
 void Renderer::draw_exit_confirmation(
     bool selected_option
 )
@@ -132,14 +136,17 @@ void Renderer::draw_exit_confirmation(
 
                 separator(),
 
-                text("←/↑/↓/→  Select    Enter  Confirm")
+                text("Arrow keys  Select    Enter  Confirm")
                     | dim
                     | center
             })
-            | center
         )
         | center;
 }
+
+// ============================================================
+// GAME OVER
+// ============================================================
 
 void Renderer::draw_gameover(
     bool selected_option
@@ -191,14 +198,17 @@ void Renderer::draw_gameover(
 
                 separator(),
 
-                text("←/↑/↓/→  Select    Enter  Confirm")
+                text("Arrow keys  Select    Enter  Confirm")
                     | dim
                     | center
             })
-            | center
         )
         | center;
 }
+
+// ============================================================
+// GAME FIELD
+// ============================================================
 
 ftxui::Element Renderer::build_game_field() const
 {
@@ -210,19 +220,90 @@ ftxui::Element Renderer::build_game_field() const
 
     for (const auto& row : buffer_)
     {
+        Elements cells;
+
+        cells.reserve(row.size());
+
+        for (const char symbol : row)
+        {
+            switch (symbol)
+            {
+                case '#':
+                    cells.push_back(
+                        text("  ")
+                            | bgcolor(Color::GrayDark)
+                    );
+                    break;
+
+                case '@':
+                    cells.push_back(
+                        text("  ")
+                            | bgcolor(Color::Green)
+                    );
+                    break;
+
+                case 'o':
+                    cells.push_back(
+                        text("  ")
+                            | bgcolor(Color::GreenLight)
+                    );
+                    break;
+
+                case '*':
+                    cells.push_back(
+                        text("  ")
+                            | bgcolor(Color::Red)
+                    );
+                    break;
+
+                default:
+                    cells.push_back(
+                        text("  ")
+                    );
+                    break;
+            }
+        }
+
+        rows.push_back(
+            hbox(std::move(cells))
+        );
+    }
+
+    return vbox(std::move(rows))
+        | border;
+}
+
+// ============================================================
+// MENU
+// ============================================================
+
+ftxui::Element Renderer::build_menu() const
+{
+    using namespace ftxui;
+
+    Elements rows;
+
+    for (const auto& row : buffer_)
+    {
         rows.push_back(
             text(row)
         );
     }
 
-    return vbox(rows);
+    return vbox(std::move(rows))
+        | border
+        | center;
 }
+
+// ============================================================
+// GAME PRESENT
+// ============================================================
 
 void Renderer::present()
 {
     using namespace ftxui;
 
-    auto game =
+    const auto game =
         build_game_field();
 
     Element document;
@@ -250,6 +331,32 @@ void Renderer::present()
     screen_.ResetPosition();
     screen_.Print();
 }
+
+// ============================================================
+// MENU PRESENT
+// ============================================================
+
+void Renderer::present_menu()
+{
+    using namespace ftxui;
+
+    const auto menu =
+        build_menu();
+
+    screen_.Clear();
+
+    Render(
+        screen_,
+        menu
+    );
+
+    screen_.ResetPosition();
+    screen_.Print();
+}
+
+// ============================================================
+// SIZE
+// ============================================================
 
 int Renderer::width() const
 {
