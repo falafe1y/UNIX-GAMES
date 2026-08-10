@@ -11,6 +11,16 @@ set(CMAKE_CXX_STANDARD 20)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
 # --------------------------------------------------
+# Dependencies
+# --------------------------------------------------
+
+find_package(ftxui REQUIRED COMPONENTS
+    screen
+    dom
+    component
+)
+
+# --------------------------------------------------
 # Platform
 # --------------------------------------------------
 
@@ -83,4 +93,16 @@ target_include_directories(FGames PRIVATE
     games/demo
     games/snake
     launcher
+)
+
+# --------------------------------------------------
+# FTXUI
+# --------------------------------------------------
+
+target_link_libraries(FGames PRIVATE
+
+    ftxui::screen
+    ftxui::dom
+    ftxui::component
+
 )

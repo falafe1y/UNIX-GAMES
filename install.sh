@@ -2,11 +2,10 @@
 
 if [ -d build ];
 then
-	cd build
-	cmake --build .
+	cmake -S . -B build
+	cmake --build build -j$(nproc)
 else
     mkdir build
-    cd build
-    cmake ..
-    cmake --build .
+    cmake -S . -B build
+    cmake --build build -j$(nproc)
 fi

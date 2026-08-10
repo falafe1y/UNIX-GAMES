@@ -25,14 +25,14 @@ Launcher::Launcher()
 :
 input_(std::make_unique<fgames::platform::linux_platform::LinuxInput>()),
 terminal_(std::make_unique<fgames::platform::linux_platform::LinuxTerminal>()),
-renderer_(*terminal_),
+renderer_(),
 engine_(*input_, renderer_)
 
 #elif defined(FGames_PLATFORM_WINDOWS)
 :
 input_(std::make_unique<fgames::platform::win_platform::WinInput>()),
 terminal_(std::make_unique<fgames::platform::win_platform::WinTerminal>()),
-renderer_(*terminal_),
+renderer_(),
 engine_(*input_, renderer_)
 
 #endif

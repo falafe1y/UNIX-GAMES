@@ -3,10 +3,15 @@
 namespace fgames::core
 {
 
-Renderer::Renderer(Terminal& terminal)
-    :
-    terminal_(terminal),
-    buffer_(height_, std::string(width_, ' '))
+Renderer::Renderer()
+:
+buffer_(
+    height_,
+    std::string(width_, ' ')
+),
+screen_(
+    ftxui::ScreenInteractive::Fullscreen()
+)
 {
 }
 
@@ -18,23 +23,31 @@ void Renderer::clear()
     }
 }
 
-void Renderer::draw(int x, int y, char symbol)
+void Renderer::draw(
+    int x,
+    int y,
+    char symbol
+)
 {
-    if (x < 0 || x >= width_) return;
-    if (y < 0 || y >= height_) return;
+    if (x < 0 || x >= width_)
+        return;
+
+    if (y < 0 || y >= height_)
+        return;
+
     buffer_[y][x] = symbol;
 }
 
 void Renderer::draw_border()
 {
-    // Верхняя и нижняя границы
+    // Верхняя и нижняя границы.
     for (int x = 0; x < width_; ++x)
     {
         buffer_[0][x] = '#';
         buffer_[height_ - 1][x] = '#';
     }
 
-    // Левая и правая границы
+    // Левая и правая границы.
     for (int y = 0; y < height_; ++y)
     {
         buffer_[y][0] = '#';
@@ -42,15 +55,25 @@ void Renderer::draw_border()
     }
 }
 
-void Renderer::draw_text(int x, int y, const std::string& text)
+void Renderer::draw_text(
+    int x,
+    int y,
+    const std::string& text
+)
 {
     for (std::size_t i = 0; i < text.size(); ++i)
     {
-        draw(x + static_cast<int>(i), y, text[i]);
+        draw(
+            x + static_cast<int>(i),
+            y,
+            text[i]
+        );
     }
 }
 
-void Renderer::draw_exit_confirmation(bool selected_option)
+void Renderer::draw_exit_confirmation(
+    bool selected_option
+)
 {
     const std::string line1 =
         "+--------------------------------------+";
@@ -95,7 +118,9 @@ void Renderer::draw_exit_confirmation(bool selected_option)
     draw_text(start_x, start_y + 6, line7);
 }
 
-void Renderer::draw_gameover(bool selected_option)
+void Renderer::draw_gameover(
+    bool selected_option
+)
 {
     const std::string line1 =
         "+--------------------------------------+";
@@ -111,8 +136,8 @@ void Renderer::draw_gameover(bool selected_option)
 
     const std::string line5 =
         selected_option
-        ? "|          [ Yes ]     No              |"
-        : "|            Yes     [ No ]            |";
+            ? "|          [ Yes ]     No              |"
+            : "|            Yes     [ No ]            |";
 
     const std::string line6 =
         "|                                      |";
@@ -142,17 +167,30 @@ void Renderer::draw_gameover(bool selected_option)
 
 void Renderer::present()
 {
-    terminal_.move_cursor(0, 0);
+    using namespace ftxui;
 
-    std::string frame;
+    Elements rows;
 
     for (const auto& row : buffer_)
     {
-        frame += row;
-        frame += '\n';
+        rows.push_back(
+            text(row)
+        );
     }
 
-    terminal_.write(frame);
+    auto document =
+        vbox(rows);
+
+    screen_.Clear();
+
+    Render(
+        screen_,
+        document
+    );
+
+    screen_.ResetPosition();
+
+    screen_.Print();
 }
 
 }
