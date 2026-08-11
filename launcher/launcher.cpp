@@ -9,8 +9,9 @@ namespace fgames::launcher
 
 Launcher::Launcher()
     :
+    screen_(ftxui::ScreenInteractive::Fullscreen()),
     renderer_(),
-    engine_(renderer_)
+    engine_(renderer_, screen_)
 {
     games_ =
     {
@@ -202,9 +203,7 @@ void Launcher::run()
                     event == Event::Character('q') ||
                     event == Event::Character('Q'))
                 {
-                    renderer_.screen()
-                        .ExitLoopClosure()();
-
+                    screen_.ExitLoopClosure()();
                     return true;
                 }
 
@@ -212,7 +211,7 @@ void Launcher::run()
             }
         );
 
-    renderer_.screen().Loop(component);
+    screen_.Loop(component);
 
     // На всякий случай.
     destroy_game();

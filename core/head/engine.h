@@ -3,6 +3,7 @@
 #include <atomic>
 #include <thread>
 
+#include <ftxui/component/screen_interactive.hpp>
 #include <ftxui/component/event.hpp>
 #include <ftxui/dom/elements.hpp>
 
@@ -16,7 +17,10 @@ namespace fgames::core
 class Engine
 {
 public:
-    explicit Engine(Renderer& renderer);
+    explicit Engine(
+        Renderer& renderer,
+        ftxui::ScreenInteractive& screen
+    );
 
     ~Engine();
 
@@ -32,11 +36,11 @@ public:
 
 private:
     Renderer& renderer_;
+    ftxui::ScreenInteractive& screen_;
 
     Timer timer_;
 
     std::atomic_bool running_{false};
-
     std::thread tick_thread_;
 };
 

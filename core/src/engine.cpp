@@ -83,9 +83,13 @@ Event convert_event(const ftxui::Event& event)
 
 }
 
-Engine::Engine(Renderer& renderer)
+Engine::Engine(
+    Renderer& renderer,
+    ftxui::ScreenInteractive& screen
+)
     :
-    renderer_(renderer)
+    renderer_(renderer),
+    screen_(screen)
 {
 }
 
@@ -168,7 +172,7 @@ void Engine::start()
                     break;
                 }
 
-                renderer_.screen().PostEvent(
+                screen_.PostEvent(
                     ftxui::Event::Custom
                 );
             }
