@@ -1,5 +1,9 @@
 #include "../head/renderer.h"
 
+#include <ftxui/component/component.hpp>
+
+#include <ftxui/component/component.hpp>
+#include <ftxui/component/component_base.hpp>
 #include <ftxui/dom/elements.hpp>
 
 namespace fgames::core
@@ -51,14 +55,12 @@ void Renderer::draw_border()
     if (width_ <= 0 || height_ <= 0)
         return;
 
-    // Верхняя и нижняя границы.
     for (int x = 0; x < width_; ++x)
     {
         buffer_[0][x] = '#';
         buffer_[height_ - 1][x] = '#';
     }
 
-    // Левая и правая границы.
     for (int y = 0; y < height_; ++y)
     {
         buffer_[y][0] = '#';
@@ -112,7 +114,7 @@ void Renderer::draw_exit_confirmation(
 
     overlay_ =
         window(
-            text(" Exit game? ")
+            text(" Exit game ")
                 | bold
                 | color(Color::Yellow)
                 | center,
@@ -277,22 +279,157 @@ ftxui::Element Renderer::build_game_field() const
 // MENU
 // ============================================================
 
-ftxui::Element Renderer::build_menu() const
+// ============================================================
+// MENU
+// ============================================================
+
+int Renderer::run_menu(
+    const std::vector<std::string>& items
+)
 {
     using namespace ftxui;
 
-    Elements rows;
+    int selected = 0;
+    bool confirmed = false;
+    bool quit = false;
 
-    for (const auto& row : buffer_)
-    {
-        rows.push_back(
-            text(row)
+    MenuOption option;
+
+    option.entries_option.transform =
+        [](EntryState state)
+        {
+            if (state.focused)
+            {
+                return hbox({
+                    text("  > "),
+                    text(state.label)
+                })
+                | bold
+                | color(Color::Black)
+                | bgcolor(Color::Green)
+                | size(WIDTH, EQUAL, 30);
+            }
+
+            return hbox({
+                text("    "),
+                text(state.label)
+            })
+            | color(Color::White)
+            | size(WIDTH, EQUAL, 30);
+        };
+
+    auto menu =
+        Menu(
+            items,
+            &selected,
+            option
         );
+
+    auto renderer =
+        ftxui::Renderer(
+            menu,
+            [&]
+            {
+                auto title =
+                    vbox({
+                        text("F G A M E S")
+                            | bold
+                            | color(Color::Green)
+                            | center,
+
+                        text("Terminal Game Collection")
+                            | dim
+                            | center
+                    })
+                    | border
+                    | color(Color::Green)
+                    | size(WIDTH, EQUAL, 40);
+
+                auto menu_box =
+                    vbox(
+                        Elements{
+                            text("GAMES")
+                                | bold
+                                | color(Color::Yellow)
+                                | center,
+
+                            separator(),
+
+                            menu->Render(),
+
+                            separator(),
+
+                            text("↑ ↓   Select")
+                                | dim
+                                | center,
+
+                            text("ENTER   Start")
+                                | dim
+                                | center,
+
+                            text("ESC     Quit")
+                                | dim
+                                | center
+                        }
+                    )
+                    | border
+                    | size(WIDTH, EQUAL, 40);
+
+                return vbox(
+                    Elements{
+                        title,
+                        text(" "),
+                        menu_box
+                    }
+                )
+                | center;
+            }
+        );
+
+    auto application =
+        CatchEvent(
+            renderer,
+            [&](Event event)
+            {
+                if (event == Event::Return)
+                {
+                    confirmed = true;
+
+                    screen_.ExitLoopClosure()();
+
+                    return true;
+                }
+
+                if (
+                    event == Event::Escape ||
+                    event == Event::Character('q') ||
+                    event == Event::Character('Q')
+                )
+                {
+                    quit = true;
+
+                    screen_.ExitLoopClosure()();
+
+                    return true;
+                }
+
+                return false;
+            }
+        );
+
+    screen_.Loop(application);
+
+    if (quit)
+    {
+        return -1;
     }
 
-    return vbox(std::move(rows))
-        | border
-        | center;
+    if (confirmed)
+    {
+        return selected;
+    }
+
+    return -1;
 }
 
 // ============================================================
@@ -326,28 +463,6 @@ void Renderer::present()
     Render(
         screen_,
         document
-    );
-
-    screen_.ResetPosition();
-    screen_.Print();
-}
-
-// ============================================================
-// MENU PRESENT
-// ============================================================
-
-void Renderer::present_menu()
-{
-    using namespace ftxui;
-
-    const auto menu =
-        build_menu();
-
-    screen_.Clear();
-
-    Render(
-        screen_,
-        menu
     );
 
     screen_.ResetPosition();

@@ -59,106 +59,48 @@ void Launcher::run()
 {
     while (running_)
     {
-        render_menu();
-        const auto events = input_->poll();
-        handle_menu_events(events);
+        std::vector<std::string> menu_items;
 
-        if (!running_)
-            break;
+        menu_items.reserve(games_.size());
 
-        if (current_game_)
+        for (const auto& game : games_)
         {
-            const bool return_to_menu = engine_.run(*current_game_);
-            current_game_.reset();
-
-            if (!return_to_menu)
-            {
-                running_ = false;
-            }
+            menu_items.push_back(game.name);
         }
-    }
-}
 
-void Launcher::handle_menu_events(const std::vector<fgames::core::Event>& events)
-{
-    for (const auto& event : events)
-    {
-        if (event.type == fgames::core::EventType::QuitRequested)
+        const int selected =
+            renderer_.run_menu(menu_items);
+
+        if (selected < 0)
         {
             running_ = false;
-            return;
+            break;
         }
 
-        if (event.type != fgames::core::EventType::KeyPressed) continue;
-        switch (event.key)
+        if (
+            selected >= 0 &&
+            static_cast<std::size_t>(selected) < games_.size()
+        )
         {
-            case fgames::core::EventKey::Up:
-                if (selected_game_ > 0)
-                {
-                    --selected_game_;
-                }
-
-                break;
-
-            case fgames::core::EventKey::Down:
-                if (selected_game_ + 1 < games_.size())
-                {
-                    ++selected_game_;
-                }
-
-                break;
-
-            case fgames::core::EventKey::Enter:
-                current_game_ =
-                    games_[selected_game_].create();
-
-                break;
-
-            case fgames::core::EventKey::Escape:
-                running_ = false;
-                break;
-
-            default:
-                break;
+            current_game_ =
+                games_[selected].create();
         }
 
-        if (!running_)
-            return;
-    }
-}
-
-void Launcher::render_menu()
-{
-    renderer_.clear();
-    renderer_.draw_border();
-    const std::string title = "FGames";
-
-    for (std::size_t i = 0; i < title.size(); ++i)
-    {
-        renderer_.draw(2 + static_cast<int>(i), 1, title[i]);
-    }
-
-    for (std::size_t i = 0; i < games_.size(); ++i)
-    {
-        const bool selected = i == selected_game_;
-
-        const std::string prefix = selected ? "> " : "  ";
-        const std::string& name = games_[i].name;
-
-        const int y = 3 + static_cast<int>(i);
-
-        for (std::size_t x = 0; x < prefix.size(); ++x)
+        if (!current_game_)
         {
-            renderer_.draw(2 + static_cast<int>(x), y, prefix[x]);
+            continue;
         }
 
-        for (std::size_t x = 0; x < name.size(); ++x)
+        const bool return_to_menu =
+            engine_.run(*current_game_);
+
+        current_game_.reset();
+
+        if (!return_to_menu)
         {
-            renderer_.draw(2 + static_cast<int>(prefix.size() + x), y, name[x]);
+            running_ = false;
         }
     }
-
-    renderer_.present_menu();
 }
 
 }

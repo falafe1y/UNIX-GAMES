@@ -3,6 +3,7 @@
 #include <string>
 #include <vector>
 
+#include <ftxui/component/component.hpp>
 #include <ftxui/component/screen_interactive.hpp>
 #include <ftxui/dom/elements.hpp>
 
@@ -15,6 +16,10 @@ class Renderer
 {
 public:
     Renderer();
+
+    // ========================================================
+    // GAME
+    // ========================================================
 
     void clear();
 
@@ -40,19 +45,27 @@ public:
         bool selected_option
     );
 
-    // Игровой экран.
     void present();
 
-    // Экран лаунчера.
-    void present_menu();
+    // ========================================================
+    // MENU
+    // ========================================================
+
+    // Возвращает индекс выбранной игры.
+    // -1 = выход из меню.
+    int run_menu(
+        const std::vector<std::string>& items
+    );
+
+    // ========================================================
+    // SIZE
+    // ========================================================
 
     int width() const;
     int height() const;
 
 private:
     ftxui::Element build_game_field() const;
-
-    ftxui::Element build_menu() const;
 
 private:
     int width_ =
@@ -61,10 +74,13 @@ private:
     int height_ =
         WorldConfig().world_height;
 
+    // Игровой framebuffer.
     std::vector<std::string> buffer_;
 
+    // FTXUI terminal.
     ftxui::ScreenInteractive screen_;
 
+    // Overlay для game over / exit confirmation.
     ftxui::Element overlay_;
 };
 
