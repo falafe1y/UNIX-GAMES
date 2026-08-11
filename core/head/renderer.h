@@ -14,76 +14,78 @@ namespace fgames::core
 class Renderer
 {
 public:
-    Renderer();
+Renderer();
 
-    // ========================================================
-    // GAME
-    // ========================================================
+// ========================================================
+// GAME
+// ========================================================
 
-    void clear();
+void clear();
 
-    void draw(
-        int x,
-        int y,
-        char symbol
-    );
+void draw(
+    int x,
+    int y,
+    char symbol
+);
 
-    void draw_border();
+void draw_border();
 
-    void draw_text(
-        int x,
-        int y,
-        const std::string& text
-    );
+void draw_text(
+    int x,
+    int y,
+    const std::string& text
+);
 
-    void draw_exit_confirmation(
-        bool selected_option
-    );
+void draw_exit_confirmation(
+    bool selected_option
+);
 
-    void draw_gameover(
-        bool selected_option
-    );
+void draw_gameover(
+    bool selected_option
+);
 
-    // FTXUI representation текущего framebuffer.
-    ftxui::Element present() const;
+ftxui::Element present() const;
 
-    // ========================================================
-    // MENU
-    // ========================================================
+// ========================================================
+// MENU
+// ========================================================
 
-    int run_menu(
-        const std::vector<std::string>& items
-    );
+ftxui::Element build_menu(
+    const std::vector<std::string>& items,
+    int selected
+) const;
 
-    // ========================================================
-    // SIZE
-    // ========================================================
+// ========================================================
+// SIZE
+// ========================================================
 
-    int width() const;
-    int height() const;
+int width() const;
+int height() const;
 
-    // ========================================================
-    // FTXUI
-    // ========================================================
+// ========================================================
+// FTXUI
+// ========================================================
 
-    void request_frame();
+void request_frame();
 
-    ftxui::ScreenInteractive& screen();
+ftxui::ScreenInteractive& screen();
 
 private:
-    ftxui::Element build_game_field() const;
+ftxui::Element build_game_field() const;
 
-    ftxui::Element overlay_;
+private:
+int width_ =
+WorldConfig().world_width;
 
-    int width_ =
-        WorldConfig().world_width;
+int height_ =
+    WorldConfig().world_height;
 
-    int height_ =
-        WorldConfig().world_height;
+std::vector<std::string> buffer_;
 
-    std::vector<std::string> buffer_;
+ftxui::ScreenInteractive screen_;
 
-    ftxui::ScreenInteractive screen_;
+ftxui::Element overlay_;
+
 };
 
 }

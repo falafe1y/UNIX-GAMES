@@ -1,11 +1,11 @@
 #pragma once
 
+#include <ftxui/component/component.hpp>
+#include <ftxui/dom/elements.hpp>
+
 #include "game.h"
 #include "renderer.h"
 #include "timer.h"
-
-#include <ftxui/component/screen_interactive.hpp>
-#include <ftxui/dom/elements.hpp>
 
 namespace fgames::core
 {
@@ -13,18 +13,31 @@ namespace fgames::core
 class Engine
 {
 public:
-    explicit Engine(Renderer& renderer);
+explicit Engine(Renderer& renderer);
 
-    // true  -> игра хочет вернуться в Launcher
-    // false -> приложение хочет завершиться
-    bool run(Game& game);
+// Обрабатывает FTXUI-событие игры.
+// Возвращает true, если событие было обработано.
+bool handle_event(
+    Game& game,
+    const ftxui::Event& event
+);
+
+// Обновляет игру и строит её FTXUI-представление.
+ftxui::Element render(Game& game);
+
+// Запускает периодический redraw.
+void start_timer();
+
+// Останавливает периодический redraw.
+void stop_timer();
 
 private:
-    Renderer& renderer_;
+Renderer& renderer_;
 
-    Timer timer_;
+Timer timer_;
 
-    bool running_{false};
+bool timer_running_{false};
+
 };
 
 }

@@ -5,6 +5,8 @@
 #include <string>
 #include <vector>
 
+#include <ftxui/component/component.hpp>
+
 #include "../core/head/engine.h"
 #include "../core/head/game.h"
 #include "../core/head/renderer.h"
@@ -19,30 +21,43 @@ namespace fgames::launcher
 class Launcher
 {
 public:
-    Launcher();
+Launcher();
 
-    void run();
-
-private:
-    struct GameEntry
-    {
-        std::string name;
-
-        std::function<
-            std::unique_ptr<fgames::core::Game>()
-        > create;
-    };
+void run();
 
 private:
-    bool running_{true};
+enum class AppState
+{
+Menu,
+Game
+};
 
-    std::vector<GameEntry> games_;
+struct GameEntry
+{
+    std::string name;
 
-    std::unique_ptr<fgames::core::Game> current_game_;
+    std::function<
+        std::unique_ptr<fgames::core::Game>()
+    > create;
+};
 
-    fgames::core::Renderer renderer_;
+private:
+bool running_{true};
 
-    fgames::core::Engine engine_;
+AppState state_{AppState::Menu};
+
+std::vector<GameEntry> games_;
+
+std::vector<std::string> game_names_;
+
+std::size_t selected_game_{0};
+
+std::unique_ptr<fgames::core::Game> current_game_;
+
+fgames::core::Renderer renderer_;
+
+fgames::core::Engine engine_;
+
 };
 
 }
