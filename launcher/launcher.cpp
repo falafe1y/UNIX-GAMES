@@ -1,57 +1,41 @@
 #include "launcher.h"
 
-#ifdef FGames_PLATFORM_LINUX
-
-#include "../core/platform/linux/head/linux_input.h"
-#include "../core/platform/linux/head/linux_terminal.h"
-
-#elif defined(FGames_PLATFORM_WINDOWS)
-
-#include "../core/platform/win/head/win_input.h"
-#include "../core/platform/win/head/win_terminal.h"
-
-#else
-
-#error "Unknown platform"
-
-#endif
-
 namespace fgames::launcher
 {
 
 Launcher::Launcher()
-
-#ifdef FGames_PLATFORM_LINUX
-:
-input_(std::make_unique<fgames::platform::linux_platform::LinuxInput>()),
-terminal_(std::make_unique<fgames::platform::linux_platform::LinuxTerminal>()),
-renderer_(),
-engine_(*input_, renderer_)
-
-#elif defined(FGames_PLATFORM_WINDOWS)
-:
-input_(std::make_unique<fgames::platform::win_platform::WinInput>()),
-terminal_(std::make_unique<fgames::platform::win_platform::WinTerminal>()),
-renderer_(),
-engine_(*input_, renderer_)
-
-#endif
-
+    :
+    renderer_(),
+    engine_(renderer_)
 {
     games_ =
     {
         {
-            "Snake", [] {return std::make_unique<fgames::games::SnakeGame>();}
+            "Snake",
+            [] {
+                return std::make_unique<
+                    fgames::games::SnakeGame
+                >();
+            }
         },
 
         {
-            "Demo", [] {return std::make_unique<fgames::games::DemoGame>();}
+            "Demo",
+            [] {
+                return std::make_unique<
+                    fgames::games::DemoGame
+                >();
+            }
         },
 
         {
-            "Tetris", [] {return std::make_unique<fgames::games::TetrisGame>();}
+            "Tetris",
+            [] {
+                return std::make_unique<
+                    fgames::games::TetrisGame
+                >();
+            }
         }
-
     };
 }
 
@@ -71,15 +55,23 @@ void Launcher::run()
         const int selected =
             renderer_.run_menu(names);
 
+        /*
+         * Пользователь вышел из Launcher.
+         */
         if (selected < 0 ||
             selected >= static_cast<int>(games_.size()))
         {
+            running_ = false;
             break;
         }
 
         current_game_ =
             games_[selected].create();
 
+        /*
+         * Engine запускает FTXUI event loop
+         * для конкретной игры.
+         */
         const bool return_to_menu =
             engine_.run(*current_game_);
 

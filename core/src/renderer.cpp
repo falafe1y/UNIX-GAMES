@@ -280,40 +280,21 @@ ftxui::Element Renderer::build_game_field() const
 // GAME PRESENT
 // ============================================================
 
-void Renderer::present()
+ftxui::Element Renderer::present() const
 {
     using namespace ftxui;
 
-    const auto game =
-        build_game_field();
-
-    Element document;
+    const auto game = build_game_field();
 
     if (overlay_)
     {
-        document =
-            dbox({
-                game,
-                overlay_
-            });
-    }
-    else
-    {
-        document = game;
+        return dbox({
+            game,
+            overlay_
+        });
     }
 
-    // ВАЖНО:
-    //
-    // Здесь больше НЕТ:
-    //
-    // screen_.Clear();
-    // Render(...);
-    // screen_.Print();
-    //
-    // FTXUI сам занимается выводом.
-    //
-    // Этот метод теперь фактически оставлен
-    // только для совместимости со старым Engine.
+    return game;
 }
 
 // ============================================================

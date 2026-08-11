@@ -1,9 +1,11 @@
 #pragma once
 
 #include "game.h"
-#include "input.h"
 #include "renderer.h"
 #include "timer.h"
+
+#include <ftxui/component/screen_interactive.hpp>
+#include <ftxui/dom/elements.hpp>
 
 namespace fgames::core
 {
@@ -11,20 +13,18 @@ namespace fgames::core
 class Engine
 {
 public:
-    Engine(Input& input, Renderer& renderer);
+    explicit Engine(Renderer& renderer);
 
-    // Запускает переданную игру.
-    // true  -> игра хочет вернуться в Launcher.
-    // false -> Engine завершился обычным образом.
+    // true  -> игра хочет вернуться в Launcher
+    // false -> приложение хочет завершиться
     bool run(Game& game);
 
 private:
-    bool running_{true};
-
-    Input& input_;
     Renderer& renderer_;
 
     Timer timer_;
+
+    bool running_{false};
 };
 
 }

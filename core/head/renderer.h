@@ -3,7 +3,6 @@
 #include <string>
 #include <vector>
 
-#include <ftxui/component/component.hpp>
 #include <ftxui/component/screen_interactive.hpp>
 #include <ftxui/dom/elements.hpp>
 
@@ -45,8 +44,8 @@ public:
         bool selected_option
     );
 
-    // Отрисовка одного кадра игры.
-    void present();
+    // FTXUI representation текущего framebuffer.
+    ftxui::Element present() const;
 
     // ========================================================
     // MENU
@@ -63,8 +62,10 @@ public:
     int width() const;
     int height() const;
 
-    // Позволяет игровому циклу попросить FTXUI
-    // перерисовать интерфейс.
+    // ========================================================
+    // FTXUI
+    // ========================================================
+
     void request_frame();
 
     ftxui::ScreenInteractive& screen();
@@ -72,21 +73,17 @@ public:
 private:
     ftxui::Element build_game_field() const;
 
-private:
+    ftxui::Element overlay_;
+
     int width_ =
         WorldConfig().world_width;
 
     int height_ =
         WorldConfig().world_height;
 
-    // Игровой framebuffer.
     std::vector<std::string> buffer_;
 
-    // Единственный владелец terminal UI lifecycle.
     ftxui::ScreenInteractive screen_;
-
-    // Overlay для dialogs.
-    ftxui::Element overlay_;
 };
 
 }
