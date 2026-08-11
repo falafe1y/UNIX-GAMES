@@ -45,14 +45,13 @@ public:
         bool selected_option
     );
 
+    // Отрисовка одного кадра игры.
     void present();
 
     // ========================================================
     // MENU
     // ========================================================
 
-    // Возвращает индекс выбранной игры.
-    // -1 = выход из меню.
     int run_menu(
         const std::vector<std::string>& items
     );
@@ -63,6 +62,12 @@ public:
 
     int width() const;
     int height() const;
+
+    // Позволяет игровому циклу попросить FTXUI
+    // перерисовать интерфейс.
+    void request_frame();
+
+    ftxui::ScreenInteractive& screen();
 
 private:
     ftxui::Element build_game_field() const;
@@ -77,10 +82,10 @@ private:
     // Игровой framebuffer.
     std::vector<std::string> buffer_;
 
-    // FTXUI terminal.
+    // Единственный владелец terminal UI lifecycle.
     ftxui::ScreenInteractive screen_;
 
-    // Overlay для game over / exit confirmation.
+    // Overlay для dialogs.
     ftxui::Element overlay_;
 };
 

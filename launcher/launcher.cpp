@@ -57,39 +57,28 @@ engine_(*input_, renderer_)
 
 void Launcher::run()
 {
+    std::vector<std::string> names;
+
+    names.reserve(games_.size());
+
+    for (const auto& game : games_)
+    {
+        names.push_back(game.name);
+    }
+
     while (running_)
     {
-        std::vector<std::string> menu_items;
-
-        menu_items.reserve(games_.size());
-
-        for (const auto& game : games_)
-        {
-            menu_items.push_back(game.name);
-        }
-
         const int selected =
-            renderer_.run_menu(menu_items);
+            renderer_.run_menu(names);
 
-        if (selected < 0)
+        if (selected < 0 ||
+            selected >= static_cast<int>(games_.size()))
         {
-            running_ = false;
             break;
         }
 
-        if (
-            selected >= 0 &&
-            static_cast<std::size_t>(selected) < games_.size()
-        )
-        {
-            current_game_ =
-                games_[selected].create();
-        }
-
-        if (!current_game_)
-        {
-            continue;
-        }
+        current_game_ =
+            games_[selected].create();
 
         const bool return_to_menu =
             engine_.run(*current_game_);

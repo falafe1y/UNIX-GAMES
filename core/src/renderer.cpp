@@ -1,23 +1,20 @@
 #include "../head/renderer.h"
 
 #include <ftxui/component/component.hpp>
-
-#include <ftxui/component/component.hpp>
-#include <ftxui/component/component_base.hpp>
 #include <ftxui/dom/elements.hpp>
 
 namespace fgames::core
 {
 
 Renderer::Renderer()
-:
-buffer_(
-    height_,
-    std::string(width_, ' ')
-),
-screen_(
-    ftxui::ScreenInteractive::Fullscreen()
-)
+    :
+    buffer_(
+        height_,
+        std::string(width_, ' ')
+    ),
+    screen_(
+        ftxui::ScreenInteractive::Fullscreen()
+    )
 {
 }
 
@@ -119,29 +116,31 @@ void Renderer::draw_exit_confirmation(
                 | color(Color::Yellow)
                 | center,
 
-            vbox({
-                text("Do you really want to leave?")
+            vbox(
+                Elements{
+                    text("Do you really want to leave?")
+                        | center,
+
+                    text("Your current game will be lost.")
+                        | dim
+                        | center,
+
+                    separator(),
+
+                    hbox({
+                        yes,
+                        text("     "),
+                        no
+                    })
                     | center,
 
-                text("Your current game will be lost.")
-                    | dim
-                    | center,
+                    separator(),
 
-                separator(),
-
-                hbox({
-                    yes,
-                    text("     "),
-                    no
-                })
-                | center,
-
-                separator(),
-
-                text("Arrow keys  Select    Enter  Confirm")
-                    | dim
-                    | center
-            })
+                    text("Arrow keys  Select    Enter  Confirm")
+                        | dim
+                        | center
+                }
+            )
         )
         | center;
 }
@@ -181,29 +180,31 @@ void Renderer::draw_gameover(
                 | color(Color::Red)
                 | center,
 
-            vbox({
-                text("The snake has crashed.")
+            vbox(
+                Elements{
+                    text("The snake has crashed.")
+                        | center,
+
+                    text("What would you like to do?")
+                        | dim
+                        | center,
+
+                    separator(),
+
+                    hbox({
+                        restart,
+                        text("     "),
+                        menu
+                    })
                     | center,
 
-                text("What would you like to do?")
-                    | dim
-                    | center,
+                    separator(),
 
-                separator(),
-
-                hbox({
-                    restart,
-                    text("     "),
-                    menu
-                })
-                | center,
-
-                separator(),
-
-                text("Arrow keys  Select    Enter  Confirm")
-                    | dim
-                    | center
-            })
+                    text("Arrow keys  Select    Enter  Confirm")
+                        | dim
+                        | center
+                }
+            )
         )
         | center;
 }
@@ -276,163 +277,6 @@ ftxui::Element Renderer::build_game_field() const
 }
 
 // ============================================================
-// MENU
-// ============================================================
-
-// ============================================================
-// MENU
-// ============================================================
-
-int Renderer::run_menu(
-    const std::vector<std::string>& items
-)
-{
-    using namespace ftxui;
-
-    int selected = 0;
-    bool confirmed = false;
-    bool quit = false;
-
-    MenuOption option;
-
-    option.entries_option.transform =
-        [](EntryState state)
-        {
-            if (state.focused)
-            {
-                return hbox({
-                    text("  > "),
-                    text(state.label)
-                })
-                | bold
-                | color(Color::Black)
-                | bgcolor(Color::Green)
-                | size(WIDTH, EQUAL, 30);
-            }
-
-            return hbox({
-                text("    "),
-                text(state.label)
-            })
-            | color(Color::White)
-            | size(WIDTH, EQUAL, 30);
-        };
-
-    auto menu =
-        Menu(
-            items,
-            &selected,
-            option
-        );
-
-    auto renderer =
-        ftxui::Renderer(
-            menu,
-            [&]
-            {
-                auto title =
-                    vbox({
-                        text("F G A M E S")
-                            | bold
-                            | color(Color::Green)
-                            | center,
-
-                        text("Terminal Game Collection")
-                            | dim
-                            | center
-                    })
-                    | border
-                    | color(Color::Green)
-                    | size(WIDTH, EQUAL, 40);
-
-                auto menu_box =
-                    vbox(
-                        Elements{
-                            text("GAMES")
-                                | bold
-                                | color(Color::Yellow)
-                                | center,
-
-                            separator(),
-
-                            menu->Render(),
-
-                            separator(),
-
-                            text("↑ ↓   Select")
-                                | dim
-                                | center,
-
-                            text("ENTER   Start")
-                                | dim
-                                | center,
-
-                            text("ESC     Quit")
-                                | dim
-                                | center
-                        }
-                    )
-                    | border
-                    | size(WIDTH, EQUAL, 40);
-
-                return vbox(
-                    Elements{
-                        title,
-                        text(" "),
-                        menu_box
-                    }
-                )
-                | center;
-            }
-        );
-
-    auto application =
-        CatchEvent(
-            renderer,
-            [&](Event event)
-            {
-                if (event == Event::Return)
-                {
-                    confirmed = true;
-
-                    screen_.ExitLoopClosure()();
-
-                    return true;
-                }
-
-                if (
-                    event == Event::Escape ||
-                    event == Event::Character('q') ||
-                    event == Event::Character('Q')
-                )
-                {
-                    quit = true;
-
-                    screen_.ExitLoopClosure()();
-
-                    return true;
-                }
-
-                return false;
-            }
-        );
-
-    screen_.Loop(application);
-
-    if (quit)
-    {
-        return -1;
-    }
-
-    if (confirmed)
-    {
-        return selected;
-    }
-
-    return -1;
-}
-
-// ============================================================
 // GAME PRESENT
 // ============================================================
 
@@ -458,15 +302,167 @@ void Renderer::present()
         document = game;
     }
 
-    screen_.Clear();
+    // ВАЖНО:
+    //
+    // Здесь больше НЕТ:
+    //
+    // screen_.Clear();
+    // Render(...);
+    // screen_.Print();
+    //
+    // FTXUI сам занимается выводом.
+    //
+    // Этот метод теперь фактически оставлен
+    // только для совместимости со старым Engine.
+}
 
-    Render(
-        screen_,
-        document
+// ============================================================
+// MENU
+// ============================================================
+
+int Renderer::run_menu(
+    const std::vector<std::string>& items
+)
+{
+    using namespace ftxui;
+
+    int selected = 0;
+
+    MenuOption option;
+
+    option.entries_option.transform =
+        [](EntryState state)
+        {
+            Element element =
+                text(state.label)
+                | center
+                | size(WIDTH, EQUAL, 30);
+
+            if (state.focused)
+            {
+                element =
+                    hbox({
+                        text("  "),
+                        text("> ")
+                            | bold
+                            | color(Color::Green),
+                        text(state.label)
+                            | bold
+                    })
+                    | bgcolor(Color::GrayDark)
+                    | size(WIDTH, EQUAL, 30);
+            }
+
+            return element;
+        };
+
+    option.on_enter =
+        screen_.ExitLoopClosure();
+
+    auto menu =
+        Menu(
+            &items,
+            &selected,
+            option
+        );
+
+    auto document =
+        ftxui::Renderer(
+            menu,
+            [&]
+            {
+                return vbox(
+                    Elements{
+                        vbox(
+                            Elements{
+                                text("F G A M E S")
+                                    | bold
+                                    | color(Color::Green)
+                                    | center,
+
+                                text("Terminal Game Collection")
+                                    | dim
+                                    | center
+                            }
+                        )
+                        | border
+                        | color(Color::Green)
+                        | size(WIDTH, EQUAL, 40),
+
+                        text(" "),
+
+                        vbox(
+                            Elements{
+                                text("GAMES")
+                                    | bold
+                                    | color(Color::Yellow)
+                                    | center,
+
+                                separator(),
+
+                                menu->Render(),
+
+                                separator(),
+
+                                text("UP/DOWN   Select")
+                                    | dim
+                                    | center,
+
+                                text("ENTER     Start")
+                                    | dim
+                                    | center,
+
+                                text("Q / ESC   Quit")
+                                    | dim
+                                    | center
+                            }
+                        )
+                        | border
+                        | size(WIDTH, EQUAL, 40)
+                    }
+                )
+                | center;
+            }
+        );
+
+    document =
+        CatchEvent(
+            document,
+            [&](Event event)
+            {
+                if (
+                    event == Event::Character('q') ||
+                    event == Event::Character('Q') ||
+                    event == Event::Escape
+                )
+                {
+                    screen_.ExitLoopClosure()();
+                    return true;
+                }
+
+                return false;
+            }
+        );
+
+    screen_.Loop(document);
+
+    return selected;
+}
+
+// ============================================================
+// FRAME REDRAW
+// ============================================================
+
+void Renderer::request_frame()
+{
+    screen_.PostEvent(
+        ftxui::Event::Custom
     );
+}
 
-    screen_.ResetPosition();
-    screen_.Print();
+ftxui::ScreenInteractive& Renderer::screen()
+{
+    return screen_;
 }
 
 // ============================================================
