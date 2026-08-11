@@ -11,9 +11,6 @@ Renderer::Renderer()
     buffer_(
         height_,
         std::string(width_, ' ')
-    ),
-    screen_(
-        ftxui::ScreenInteractive::Fullscreen()
     )
 {
 }
@@ -380,15 +377,6 @@ return vbox({
 })
 | center;
 
-}
-
-// ============================================================
-// FRAME REDRAW
-// ============================================================
-
-ftxui::ScreenInteractive& Renderer::screen()
-{
-    return screen_;
 }
 
 // ============================================================
