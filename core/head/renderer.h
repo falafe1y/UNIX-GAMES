@@ -1,11 +1,10 @@
 #pragma once
 
+#include "world_configuation.h"
+
 #include <string>
 #include <vector>
-
 #include <ftxui/dom/elements.hpp>
-
-#include "world_configuation.h"
 
 namespace fgames::core
 {
@@ -20,16 +19,11 @@ public:
     void draw(int x, int y, char symbol);
     void draw_border();
     void draw_text(int x, int y, const std::string& text);
-
     void draw_exit_confirmation(bool selected_option);
     void draw_gameover(bool selected_option);
 
     ftxui::Element present() const;
-
-    ftxui::Element build_menu(
-        const std::vector<std::string>& items,
-        int selected
-    ) const;
+    ftxui::Element build_menu(const std::vector<std::string>& items, int selected) const;
 
     int width() const;
     int height() const;

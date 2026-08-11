@@ -8,16 +8,9 @@ namespace fgames::core
 
 Renderer::Renderer()
     :
-    buffer_(
-        height_,
-        std::string(width_, ' ')
-    )
+    buffer_(height_, std::string(width_, ' '))
 {
 }
-
-// ============================================================
-// BUFFER
-// ============================================================
 
 void Renderer::clear()
 {
@@ -29,11 +22,7 @@ void Renderer::clear()
     overlay_ = ftxui::text("");
 }
 
-void Renderer::draw(
-    int x,
-    int y,
-    char symbol
-)
+void Renderer::draw(int x, int y, char symbol)
 {
     if (x < 0 || x >= width_)
         return;
@@ -62,29 +51,17 @@ void Renderer::draw_border()
     }
 }
 
-void Renderer::draw_text(
-    int x,
-    int y,
-    const std::string& text
-)
+void Renderer::draw_text(int x, int y, const std::string& text)
 {
     for (std::size_t i = 0; i < text.size(); ++i)
     {
         draw(
-            x + static_cast<int>(i),
-            y,
-            text[i]
+            x + static_cast<int>(i), y, text[i]
         );
     }
 }
 
-// ============================================================
-// EXIT CONFIRMATION
-// ============================================================
-
-void Renderer::draw_exit_confirmation(
-    bool selected_option
-)
+void Renderer::draw_exit_confirmation(bool selected_option)
 {
     using namespace ftxui;
 
@@ -142,13 +119,7 @@ void Renderer::draw_exit_confirmation(
         | center;
 }
 
-// ============================================================
-// GAME OVER
-// ============================================================
-
-void Renderer::draw_gameover(
-    bool selected_option
-)
+void Renderer::draw_gameover(bool selected_option)
 {
     using namespace ftxui;
 
@@ -205,10 +176,6 @@ void Renderer::draw_gameover(
         )
         | center;
 }
-
-// ============================================================
-// GAME FIELD
-// ============================================================
 
 ftxui::Element Renderer::build_game_field() const
 {
@@ -297,91 +264,84 @@ ftxui::Element Renderer::present() const
 // menu
 ftxui::Element Renderer::build_menu(const std::vector<std::string>& items, int selected) const
 {
-using namespace ftxui;
+    using namespace ftxui;
 
-Elements menu_items;
+    Eleents menu_items;
 
-for (std::size_t i = 0; i < items.size(); ++i)
-{
-    const bool focused =
-        static_cast<int>(i) == selected;
-
-    Element item =
-        text(items[i])
-        | center
-        | size(WIDTH, EQUAL, 30);
-
-    if (focused)
+    for (std::size_t i = 0; i < items.size(); ++i)
     {
-        item =
-            hbox({
-                text("  "),
+        const bool focused =
+            static_cast<int>(i) == selected;
 
-                text("> ")
-                    | bold
-                    | color(Color::Green),
-
-                text(items[i])
-                    | bold
-            })
-            | bgcolor(Color::GrayDark)
+        Element item =
+            text(items[i])
+            | center
             | size(WIDTH, EQUAL, 30);
+
+        if (focused)
+        {
+            item =
+                hbox({
+                    text("  "),
+                    text("> ")
+                        | bold | color(Color::Green),
+                    text(items[i])
+                        | bold
+                })
+                | bgcolor(Color::GrayDark)
+                | size(WIDTH, EQUAL, 30);
+        }
+
+        menu_items.push_back(std::move(item));
     }
 
-    menu_items.push_back(std::move(item));
-}
+    return vbox({
+        vbox({
+            text("F G A M E S")
+                | bold
+                | color(Color::Green)
+                | center,
 
-return vbox({
-    vbox({
-        text("F G A M E S")
-            | bold
-            | color(Color::Green)
-            | center,
+            text("Terminal Game Collection")
+                | dim
+                | center
+        })
+        | border
+        | color(Color::Green)
+        | size(WIDTH, EQUAL, 40),
 
-        text("Terminal Game Collection")
-            | dim
-            | center
+        text(" "),
+
+        vbox({
+            text("GAMES")
+                | bold
+                | color(Color::Yellow)
+                | center,
+
+            separator(),
+
+            vbox(std::move(menu_items)),
+
+            separator(),
+
+            text("UP/DOWN   Select")
+                | dim
+                | center,
+
+            text("ENTER     Start")
+                | dim
+                | center,
+
+            text("ESC / Q   Quit")
+                | dim
+                | center
+        })
+        | border
+        | size(WIDTH, EQUAL, 40)
     })
-    | border
-    | color(Color::Green)
-    | size(WIDTH, EQUAL, 40),
-
-    text(" "),
-
-    vbox({
-        text("GAMES")
-            | bold
-            | color(Color::Yellow)
-            | center,
-
-        separator(),
-
-        vbox(std::move(menu_items)),
-
-        separator(),
-
-        text("UP/DOWN   Select")
-            | dim
-            | center,
-
-        text("ENTER     Start")
-            | dim
-            | center,
-
-        text("ESC / Q   Quit")
-            | dim
-            | center
-    })
-    | border
-    | size(WIDTH, EQUAL, 40)
-})
-| center;
+    | center;
 
 }
-
-// ============================================================
-// SIZE
-// ============================================================
 
 int Renderer::width() const
 {

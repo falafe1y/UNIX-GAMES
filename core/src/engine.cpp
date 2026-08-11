@@ -1,7 +1,5 @@
 #include "../head/engine.h"
 
-#include <chrono>
-
 namespace fgames::core
 {
 
@@ -66,8 +64,7 @@ Event convert_event(const ftxui::Event& event)
         };
     }
 
-    if (event == ftxui::Event::Character('q') ||
-        event == ftxui::Event::Character('Q'))
+    if (event == ftxui::Event::Character('q') || event == ftxui::Event::Character('Q'))
     {
         return {
             EventType::QuitRequested,
@@ -83,10 +80,7 @@ Event convert_event(const ftxui::Event& event)
 
 }
 
-Engine::Engine(
-    Renderer& renderer,
-    ftxui::ScreenInteractive& screen
-)
+Engine::Engine(Renderer& renderer, ftxui::ScreenInteractive& screen)
     :
     renderer_(renderer),
     screen_(screen)
@@ -98,22 +92,14 @@ Engine::~Engine()
     stop();
 }
 
-bool Engine::handle_event(
-    Game& game,
-    const ftxui::Event& event
-)
+bool Engine::handle_event(Game& game, const ftxui::Event& event)
 {
-    // Игровой тик.
-    //
-    // Это внутреннее событие Engine.
-    // В Game его передавать нельзя.
     if (event == ftxui::Event::Custom)
     {
         return false;
     }
 
-    const Event core_event =
-        convert_event(event);
+    const Event core_event = convert_event(event);
 
     if (core_event.type == EventType::KeyPressed &&
         core_event.key == EventKey::Unknown)
@@ -130,9 +116,7 @@ ftxui::Element Engine::render(Game& game)
 {
     if (!game.is_paused())
     {
-        const float delta_time =
-            timer_.tick();
-
+        const float delta_time =timer_.tick();
         game.update(delta_time);
     }
     else
@@ -141,7 +125,6 @@ ftxui::Element Engine::render(Game& game)
     }
 
     renderer_.clear();
-
     game.render(renderer_);
 
     return renderer_.present();
@@ -158,8 +141,7 @@ void Engine::start()
 
     timer_.reset();
 
-    tick_thread_ = std::thread(
-        [this]()
+    tick_thread_ = std::thread([this]()
         {
             using namespace std::chrono_literals;
 
@@ -172,9 +154,7 @@ void Engine::start()
                     break;
                 }
 
-                screen_.PostEvent(
-                    ftxui::Event::Custom
-                );
+                screen_.PostEvent(ftxui::Event::Custom);
             }
         }
     );

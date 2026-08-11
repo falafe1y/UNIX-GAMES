@@ -26,16 +26,6 @@ Launcher::Launcher()
         },
 
         {
-            "Demo",
-            []()
-            {
-                return std::make_unique<
-                    fgames::games::DemoGame
-                >();
-            }
-        },
-
-        {
             "Tetris",
             []()
             {

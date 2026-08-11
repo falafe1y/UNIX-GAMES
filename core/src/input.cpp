@@ -12,19 +12,19 @@ std::vector<Event> Input::poll()
 
     if (c == -1) return events;
 
-    // Ctrl+C - выходим из игры
+    // Ctrl+C - exit
     if (c == 0x03)
     {
         events.push_back({EventType::QuitRequested});
         return events;
     }
 
-    // Escape или стрелки (escape-последовательность вида ESC [ A/B/C/D)
+    // Escape or arrows
     if (c == 0x1b)
     {
         int next = readRawByte();
 
-        // одиночный Esc, без продолжения - выходим из игры
+        // single escape - exit
         if (next == -1)
         {
             events.push_back({EventType::QuitRequested, EventKey::Escape});
