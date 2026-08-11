@@ -8,11 +8,11 @@ namespace fgames::core
 class Timer
 {
 public:
-    float delta_time();
+    float tick();
     void reset();
 
 private:
-    std::chrono::steady_clock::time_point lastTime_ = std::chrono::steady_clock::now();
+    std::chrono::steady_clock::time_point last_time_ = std::chrono::steady_clock::now();
 };
 
 }

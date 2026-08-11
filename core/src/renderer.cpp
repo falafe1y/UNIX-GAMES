@@ -386,13 +386,6 @@ return vbox({
 // FRAME REDRAW
 // ============================================================
 
-void Renderer::request_frame()
-{
-    screen_.PostEvent(
-        ftxui::Event::Custom
-    );
-}
-
 ftxui::ScreenInteractive& Renderer::screen()
 {
     return screen_;

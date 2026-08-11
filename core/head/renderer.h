@@ -66,8 +66,6 @@ int height() const;
 // FTXUI
 // ========================================================
 
-void request_frame();
-
 ftxui::ScreenInteractive& screen();
 
 private:

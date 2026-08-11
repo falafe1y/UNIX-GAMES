@@ -1,220 +1,221 @@
 #include "launcher.h"
 
+#include "../games/snake/snake.h"
+#include "../games/demo/demo.h"
+#include "../games/tetris/tetris.h"
+
 namespace fgames::launcher
 {
 
 Launcher::Launcher()
-:
-renderer_(),
-engine_(renderer_)
+    :
+    renderer_(),
+    engine_(renderer_)
 {
-games_ =
-{
-{
-"Snake",
-[] {
-return std::make_unique<
-fgames::games::SnakeGame
->();
-}
-},
-
+    games_ =
     {
-        "Demo",
-        [] {
-            return std::make_unique<
-                fgames::games::DemoGame
-            >();
-        }
-    },
+        {
+            "Snake",
+            []()
+            {
+                return std::make_unique<
+                    fgames::games::SnakeGame
+                >();
+            }
+        },
 
-    {
-        "Tetris",
-        [] {
-            return std::make_unique<
-                fgames::games::TetrisGame
-            >();
+        {
+            "Demo",
+            []()
+            {
+                return std::make_unique<
+                    fgames::games::DemoGame
+                >();
+            }
+        },
+
+        {
+            "Tetris",
+            []()
+            {
+                return std::make_unique<
+                    fgames::games::TetrisGame
+                >();
+            }
         }
+    };
+
+    game_names_.reserve(games_.size());
+
+    for (const auto& game : games_)
+    {
+        game_names_.push_back(game.name);
     }
-};
-
-game_names_.reserve(games_.size());
-
-for (const auto& game : games_)
-{
-    game_names_.push_back(game.name);
 }
 
+void Launcher::create_game(int index)
+{
+    if (index < 0 ||
+        index >= static_cast<int>(games_.size()))
+    {
+        return;
+    }
+
+    current_game_ =
+        games_[index].create();
+
+    in_game_ = true;
+
+    engine_.start();
+}
+
+void Launcher::destroy_game()
+{
+    engine_.stop();
+
+    current_game_.reset();
+
+    in_game_ = false;
 }
 
 void Launcher::run()
 {
-using namespace ftxui;
+    using namespace ftxui;
 
-/*
- * ========================================================
- * ROOT RENDERER
- * ========================================================
- */
-
-auto view = Renderer(
-    [&]
-    {
-        /*
-         * MENU
-         */
-        if (state_ == AppState::Menu)
-        {
-            return renderer_.build_menu(
-                game_names_,
-                static_cast<int>(selected_game_)
-            );
-        }
-
-        /*
-         * GAME
-         */
-        if (current_game_)
-        {
-            return engine_.render(
-                *current_game_
-            );
-        }
-
-        return text("");
-    }
-);
-
-/*
- * ========================================================
- * INPUT
- * ========================================================
- */
-
-auto root = CatchEvent(
-    view,
-    [&](const Event& event)
-    {
-        /*
-         * =================================================
-         * GAME INPUT
-         * =================================================
-         */
-
-        if (state_ == AppState::Game)
-        {
-            /*
-             * Передаём ВСЕ события игре.
-             *
-             * В том числе Escape.
-             *
-             * Мы не вмешиваемся в существующую
-             * pause / confirmation логику.
-             */
-            engine_.handle_event(
-                *current_game_,
-                event
-            );
-
-            /*
-             * Только если Game действительно
-             * решила выйти в Launcher —
-             * уничтожаем её.
-             */
-            if (current_game_->result() ==
-                core::GameResult::ExitToMenu)
+    auto renderer_component =
+        Renderer(
+            [&]()
             {
-                engine_.stop_timer();
+                if (in_game_ && current_game_)
+                {
+                    return engine_.render(
+                        *current_game_
+                    );
+                }
 
-                current_game_.reset();
-
-                state_ = AppState::Menu;
-
-                renderer_.request_frame();
+                return renderer_.build_menu(
+                    game_names_,
+                    selected_
+                );
             }
+        );
 
-            return true;
-        }
+    auto component =
+        CatchEvent(
+            renderer_component,
 
-        /*
-         * =================================================
-         * MENU INPUT
-         * =================================================
-         */
-
-        if (event == Event::ArrowUp)
-        {
-            if (selected_game_ > 0)
+            [&](const Event& event)
             {
-                --selected_game_;
+                // ==================================================
+                // GAME
+                // ==================================================
+
+                if (in_game_ && current_game_)
+                {
+                    // Передаём событие игре.
+                    engine_.handle_event(
+                        *current_game_,
+                        event
+                    );
+
+                    // Проверяем результат игры.
+                    switch (current_game_->result())
+                    {
+                        case core::GameResult::Running:
+                        {
+                            break;
+                        }
+
+                        case core::GameResult::Restart:
+                        {
+                            const int game_index =
+                                selected_;
+
+                            destroy_game();
+
+                            create_game(game_index);
+
+                            break;
+                        }
+
+                        case core::GameResult::ExitToMenu:
+                        {
+                            destroy_game();
+
+                            break;
+                        }
+                    }
+
+                    return true;
+                }
+
+                // ==================================================
+                // MENU
+                // ==================================================
+
+                if (event == Event::ArrowUp)
+                {
+                    if (!game_names_.empty())
+                    {
+                        selected_--;
+
+                        if (selected_ < 0)
+                        {
+                            selected_ =
+                                static_cast<int>(
+                                    game_names_.size()
+                                ) - 1;
+                        }
+                    }
+
+                    return true;
+                }
+
+                if (event == Event::ArrowDown)
+                {
+                    if (!game_names_.empty())
+                    {
+                        selected_++;
+
+                        if (selected_ >=
+                            static_cast<int>(
+                                game_names_.size()
+                            ))
+                        {
+                            selected_ = 0;
+                        }
+                    }
+
+                    return true;
+                }
+
+                // ENTER -> запуск игры
+                if (event == Event::Return)
+                {
+                    create_game(selected_);
+
+                    return true;
+                }
+
+                // ESC / Q -> выход из программы
+                if (event == Event::Escape ||
+                    event == Event::Character('q') ||
+                    event == Event::Character('Q'))
+                {
+                    renderer_.screen()
+                        .ExitLoopClosure()();
+
+                    return true;
+                }
+
+                return false;
             }
+        );
 
-            renderer_.request_frame();
+    renderer_.screen().Loop(component);
 
-            return true;
-        }
-
-        if (event == Event::ArrowDown)
-        {
-            if (selected_game_ + 1 < games_.size())
-            {
-                ++selected_game_;
-            }
-
-            renderer_.request_frame();
-
-            return true;
-        }
-
-        /*
-         * ENTER -> GAME
-         */
-        if (event == Event::Return)
-        {
-            current_game_ =
-                games_[selected_game_].create();
-
-            state_ = AppState::Game;
-
-            engine_.start_timer();
-
-            renderer_.request_frame();
-
-            return true;
-        }
-
-        /*
-         * ESC / Q -> EXIT APPLICATION
-         */
-        if (event == Event::Escape ||
-            event == Event::Character('q') ||
-            event == Event::Character('Q'))
-        {
-            running_ = false;
-
-            renderer_.screen()
-                .ExitLoopClosure()();
-
-            return true;
-        }
-
-        return false;
-    }
-);
-
-/*
- * ========================================================
- * ONE AND ONLY ONE LOOP
- * ========================================================
- */
-
-renderer_.screen().Loop(root);
-
-engine_.stop_timer();
-
-current_game_.reset();
-
+    // На всякий случай.
+    destroy_game();
 }
-
 
 }

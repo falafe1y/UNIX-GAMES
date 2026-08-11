@@ -7,8 +7,9 @@ namespace fgames::core
 
 enum class GameResult
 {
-    Continue,
-    ExitToMenu
+    Running,
+    ExitToMenu,
+    Restart
 };
 
 class Renderer;
@@ -37,7 +38,7 @@ public:
     virtual bool is_paused() const = 0;
 
 protected:
-    GameResult result_ = GameResult::Continue;
+    GameResult result_ = GameResult::Running;
 };
 
 }

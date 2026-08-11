@@ -3,17 +3,20 @@
 namespace fgames::core
 {
 
-float Timer::delta_time()
+float Timer::tick()
 {
-    auto current = std::chrono::steady_clock::now();
-    std::chrono::duration<float> elapsed = current - lastTime_;
-    lastTime_ = current;
+    const auto now = std::chrono::steady_clock::now();
+
+    const std::chrono::duration<float> elapsed = now - last_time_;
+
+    last_time_ = now;
+
     return elapsed.count();
 }
 
 void Timer::reset()
 {
-    lastTime_ = std::chrono::steady_clock::now();
+    last_time_ = std::chrono::steady_clock::now();
 }
 
 }
