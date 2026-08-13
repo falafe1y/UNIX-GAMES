@@ -5,6 +5,8 @@
 #include <string>
 #include <vector>
 #include <ftxui/dom/elements.hpp>
+#include <ftxui/component/component.hpp>
+#include <ftxui/dom/elements.hpp>
 
 namespace fgames::core
 {
