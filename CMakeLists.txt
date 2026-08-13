@@ -54,7 +54,6 @@ add_executable(FGames
     core/src/renderer.cpp
     core/src/timer.cpp
 
-    games/demo/demo.cpp
     games/snake/snake.cpp
     games/tetris/tetris.cpp
 

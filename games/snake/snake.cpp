@@ -336,14 +336,14 @@ void SnakeGame::render(fgames::core::Renderer& renderer)
     renderer.draw_border();
 
     // Еда
-    renderer.draw(food_.x, food_.y, '*');
+    renderer.draw(food_.x, food_.y, ftxui::Color::Red);
 
     // Змея
     bool is_head = true;
 
     for (const auto& segment : snake_)
     {
-        renderer.draw(segment.x, segment.y, is_head ? '@' : 'o');
+        renderer.draw(segment.x, segment.y, is_head ? ftxui::Color::Yellow : ftxui::Color::Green);
 
         is_head = false;
     }

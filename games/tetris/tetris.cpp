@@ -450,7 +450,7 @@ void TetrisGame::render(fgames::core::Renderer& renderer)
         {
             if (field_[y][x])
             {
-                renderer.draw(x, y, '#');
+                renderer.draw(x, y, ftxui::Color::GrayLight);
             }
         }
     }
@@ -463,7 +463,7 @@ void TetrisGame::render(fgames::core::Renderer& renderer)
         
         if (y >= 0 && y < FIELD_HEIGHT_ && x >= 0 && x < FIELD_WIDTH_)
         {
-            renderer.draw(x, y, '@');
+            renderer.draw(x, y, ftxui::Color::Green);
         }
     }
 

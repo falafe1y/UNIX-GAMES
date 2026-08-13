@@ -5,29 +5,30 @@ namespace fgames::core
 
 Renderer::Renderer()
     :
-    buffer_(height_, std::string(width_, ' '))
+    buffer_(height_, std::string(width_, ' ')),
+    bg_buffer_(height_, std::vector<ftxui::Color>(width_, ftxui::Color::Default))
 {
 }
 
 void Renderer::clear()
 {
-    for (auto& row : buffer_)
+    for (auto& row : bg_buffer_)
     {
-        row.assign(width_, ' ');
+        std::fill(row.begin(), row.end(), ftxui::Color::Default);
     }
 
     overlay_ = ftxui::text("");
 }
 
-void Renderer::draw(int x, int y, char symbol)
+void Renderer::draw(int x, int y, ftxui::Color color)
 {
-    if (x < 0 || x >= width_)
+    if (x < 0 || x >= width_) 
         return;
 
-    if (y < 0 || y >= height_)
+    if (y < 0 || y >= height_) 
         return;
 
-    buffer_[y][x] = symbol;
+    bg_buffer_[y][x] = color;
 }
 
 void Renderer::draw_border()
@@ -37,26 +38,25 @@ void Renderer::draw_border()
 
     for (int x = 0; x < width_; ++x)
     {
-        buffer_[0][x] = '#';
-        buffer_[height_ - 1][x] = '#';
+        draw(x, 0, ftxui::Color::GrayDark);
+        draw(x, height_ -1, ftxui::Color::GrayDark);
     }
 
     for (int y = 0; y < height_; ++y)
     {
-        buffer_[y][0] = '#';
-        buffer_[y][width_ - 1] = '#';
+        draw(0, y, ftxui::Color::GrayDark);
+        draw(width_ - 1, y, ftxui::Color::GrayDark);
     }
 }
 
-void Renderer::draw_text(int x, int y, const std::string& text)
-{
-    for (std::size_t i = 0; i < text.size(); ++i)
-    {
-        draw(
-            x + static_cast<int>(i), y, text[i]
-        );
-    }
-}
+// void Renderer::draw_text(int x, int y, const std::string& text)
+// {
+//     for (std::size_t i = 0; i < text.size(); ++i)
+//     {
+//         draw(x + static_cast<int>(i), y, ftxui::Color::White);
+
+//     }
+// }
 
 void Renderer::draw_exit_confirmation(bool selected_option)
 {
@@ -176,65 +176,23 @@ void Renderer::draw_gameover(bool selected_option)
 
 ftxui::Element Renderer::build_game_field() const
 {
-    using namespace ftxui;
-
-    Elements rows;
-
+    ftxui::Elements rows;
     rows.reserve(buffer_.size());
 
-    for (const auto& row : buffer_)
+    for (const auto& row : bg_buffer_)
     {
-        Elements cells;
-
+        ftxui::Elements cells;
         cells.reserve(row.size());
 
-        for (const char symbol : row)
+        for (const auto& color : row)
         {
-            switch (symbol)
-            {
-                case '#':
-                    cells.push_back(
-                        text("  ")
-                            | bgcolor(Color::GrayDark)
-                    );
-                    break;
-
-                case '@':
-                    cells.push_back(
-                        text("  ")
-                            | bgcolor(Color::Green)
-                    );
-                    break;
-
-                case 'o':
-                    cells.push_back(
-                        text("  ")
-                            | bgcolor(Color::GreenLight)
-                    );
-                    break;
-
-                case '*':
-                    cells.push_back(
-                        text("  ")
-                            | bgcolor(Color::Red)
-                    );
-                    break;
-
-                default:
-                    cells.push_back(
-                        text("  ")
-                    );
-                    break;
-            }
+            cells.push_back(ftxui::text("  ") | ftxui::bgcolor(color));
         }
 
-        rows.push_back(
-            hbox(std::move(cells)) | center | center
-        );
+        rows.push_back(hbox(std::move(cells)) | ftxui::center);
     }
 
-    return vbox(std::move(rows))
-        | border;
+    return vbox(std::move(rows)) | ftxui::border;
 }
 
 // ============================================================
