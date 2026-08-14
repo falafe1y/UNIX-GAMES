@@ -2,6 +2,7 @@
 
 #include "../games/snake/snake.h"
 #include "../games/tetris/tetris.h"
+#include "../games/demo/demo.h"
 
 namespace fgames::launcher
 {
@@ -14,6 +15,16 @@ Launcher::Launcher()
 {
     games_ =
     {
+        {
+            "DEMO",
+            []()
+            {
+                return std::make_unique<
+                    fgames::games::DemoGame
+                >();
+            }
+        },
+
         {
             "Snake",
             []()

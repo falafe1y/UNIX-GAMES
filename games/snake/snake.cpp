@@ -255,10 +255,8 @@ void SnakeGame::move()
 bool SnakeGame::is_collision(const SnakePosition& SnakePosition) const
 {
     // Столкновение со стеной.
-    if (SnakePosition.x <= 0 ||
-        SnakePosition.x >= FIELD_WITDH_ - 1 ||
-        SnakePosition.y <= 0 ||
-        SnakePosition.y >= FIELD_HEIGHT_ - 1)
+    if (SnakePosition.x < 0 || SnakePosition.x >= FIELD_WITDH_ ||
+        SnakePosition.y < 0 || SnakePosition.y >= FIELD_HEIGHT_)
     {
         return true;
     }
@@ -333,7 +331,7 @@ void SnakeGame::render(fgames::core::Renderer& renderer)
 {
     renderer.clear();
 
-    renderer.draw_border();
+    // renderer.draw_border();
 
     // Еда
     renderer.draw(food_.x, food_.y, ftxui::Color::Red);

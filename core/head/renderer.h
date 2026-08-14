@@ -20,7 +20,7 @@ public:
 
     // void draw(int x, int y, char symbol);
     void draw(int x, int y, ftxui::Color color);
-    void draw_border();
+    // void draw_border();
     // void draw_text(int x, int y, const std::string& text);
     void draw_exit_confirmation(bool selected_option);
     void draw_gameover(bool selected_option);

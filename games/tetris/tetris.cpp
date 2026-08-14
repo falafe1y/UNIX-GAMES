@@ -441,7 +441,7 @@ bool TetrisGame::is_paused() const
 void TetrisGame::render(fgames::core::Renderer& renderer)
 {
     renderer.clear();
-    renderer.draw_border();
+    // renderer.draw_border();
 
     // Отрисовка игрового поля
     for (int y = 0; y < FIELD_HEIGHT_; ++y)

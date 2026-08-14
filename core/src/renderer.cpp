@@ -6,7 +6,7 @@ namespace fgames::core
 Renderer::Renderer()
     :
     buffer_(height_, std::string(width_, ' ')),
-    bg_buffer_(height_, std::vector<ftxui::Color>(width_, ftxui::Color::Default))
+    bg_buffer_(height_, std::vector<ftxui::Color>(width_, ftxui::Color::Black))
 {
 }
 
@@ -14,7 +14,7 @@ void Renderer::clear()
 {
     for (auto& row : bg_buffer_)
     {
-        std::fill(row.begin(), row.end(), ftxui::Color::Default);
+        std::fill(row.begin(), row.end(), ftxui::Color::Black);
     }
 
     overlay_ = ftxui::text("");
@@ -30,33 +30,6 @@ void Renderer::draw(int x, int y, ftxui::Color color)
 
     bg_buffer_[y][x] = color;
 }
-
-void Renderer::draw_border()
-{
-    if (width_ <= 0 || height_ <= 0)
-        return;
-
-    for (int x = 0; x < width_; ++x)
-    {
-        draw(x, 0, ftxui::Color::GrayDark);
-        draw(x, height_ -1, ftxui::Color::GrayDark);
-    }
-
-    for (int y = 0; y < height_; ++y)
-    {
-        draw(0, y, ftxui::Color::GrayDark);
-        draw(width_ - 1, y, ftxui::Color::GrayDark);
-    }
-}
-
-// void Renderer::draw_text(int x, int y, const std::string& text)
-// {
-//     for (std::size_t i = 0; i < text.size(); ++i)
-//     {
-//         draw(x + static_cast<int>(i), y, ftxui::Color::White);
-
-//     }
-// }
 
 void Renderer::draw_exit_confirmation(bool selected_option)
 {
