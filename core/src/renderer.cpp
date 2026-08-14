@@ -288,15 +288,15 @@ ftxui::Element Renderer::present() const
     auto score_panel = build_score_panel();
 
     auto content = vbox({
-        game_field,
-        score_panel
+        score_panel | center,
+        center(game_field) | flex
     });
 
     if (overlay_) {
         content = dbox({ content, overlay_ });
     }
 
-    return border(content) | flex;
+    return border(content);
 }
 
 // ====================================== OTHER ======================================
