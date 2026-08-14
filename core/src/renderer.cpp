@@ -20,6 +20,8 @@ void Renderer::clear()
     overlay_ = ftxui::text("");
 }
 
+// ====================================== DRAWING ======================================
+
 void Renderer::draw(int x, int y, ftxui::Color color)
 {
     if (x < 0 || x >= width_) 
@@ -147,6 +149,86 @@ void Renderer::draw_gameover(bool selected_option)
         | center;
 }
 
+// ====================================== BUILD ======================================
+
+ftxui::Element Renderer::build_menu(const std::vector<std::string>& items, int selected) const
+{
+    using namespace ftxui;
+
+    Elements menu_items;
+
+    for (std::size_t i = 0; i < items.size(); ++i)
+    {
+        const bool focused = static_cast<int>(i) == selected;
+
+        Element item =
+            text(items[i])
+            | center;
+
+        if (focused)
+        {
+            item =
+                hbox({
+                    text("  "),
+                    text("> ")
+                        | bold | color(Color::Green),
+                    text(items[i])
+                        | bold | center
+                })
+                | bgcolor(Color::GrayDark);
+        }
+
+        menu_items.push_back(std::move(item));
+    }
+
+    return vbox({
+        vbox({
+            text("F G A M E S")
+                | bold
+                | color(Color::Green)
+                | center,
+
+            text("Terminal Game Collection")
+                | dim
+                | center
+        })
+        | border
+        | color(Color::Green)
+        | size(WIDTH, EQUAL, 40),
+
+        text(" "),
+
+        vbox({
+            text("GAMES")
+                | bold
+                | color(Color::Yellow)
+                | center,
+
+            separator(),
+
+            vbox(std::move(menu_items)),
+
+            separator(),
+
+            text("LEFT/RIGHT    Select")
+                | dim
+                | center,
+
+            text("ENTER    Start")
+                | dim
+                | center,
+
+            text("ESC/Q    Quit")
+                | dim
+                | center
+        })
+        | border
+        // | size(WIDTH, EQUAL, 40)
+    })
+    | center;
+
+}
+
 ftxui::Element Renderer::build_game_field() const
 {
     ftxui::Elements rows;
@@ -168,105 +250,56 @@ ftxui::Element Renderer::build_game_field() const
     return vbox(std::move(rows)) | ftxui::border | ftxui::center;
 }
 
+ftxui::Element Renderer::build_score_panel() const
+{
+    using namespace ftxui;
+
+    const auto score_text = text(std::to_string(current_game_score_))
+        | bold
+        | color(Color::White)
+        | bgcolor(Color::DarkBlue);
+
+    const auto title = text("Score")
+        | bold
+        | color(Color::Yellow)
+        | center;
+
+    return window(
+        title,
+        vbox({
+            separator(),
+            hbox({
+                text("   "),
+                score_text,
+                text("   ")
+            })
+            | center
+        })
+    );
+}
+
+// ====================================== RENDERING ======================================
+
 ftxui::Element Renderer::present() const
 {
     using namespace ftxui;
 
-    // Сначала собираем игровое поле (уже с внутренней рамкой)
-    auto game = build_game_field();
+    auto game_field = build_game_field();
+    auto score_panel = build_score_panel();
 
-    // Если есть оверлей (меню выхода, game over и т.п.) — накладываем поверх поля
+    auto content = vbox({
+        game_field,
+        score_panel
+    });
+
     if (overlay_) {
-        game = dbox({ game, overlay_ });
+        content = dbox({ content, overlay_ });
     }
 
-    // Теперь оборачиваем ВСЁ (поле + оверлей) в рамку на весь экран
-    return border(game) | flex;
+    return border(content) | flex;
 }
 
-
-// menu
-ftxui::Element Renderer::build_menu(const std::vector<std::string>& items, int selected) const
-{
-using namespace ftxui;
-
-Elements menu_items;
-
-for (std::size_t i = 0; i < items.size(); ++i)
-{
-    const bool focused = static_cast<int>(i) == selected;
-
-    Element item =
-        text(items[i])
-        | center;
-
-    if (focused)
-    {
-        item =
-            hbox({
-                text("  "),
-                text("> ")
-                    | bold | color(Color::Green),
-                text(items[i])
-                    | bold | center
-            })
-            | bgcolor(Color::GrayDark);
-    }
-
-    menu_items.push_back(std::move(item));
-}
-
-return vbox({
-    vbox({
-        text("F G A M E S")
-            | bold
-            | color(Color::Green)
-            | center,
-
-        text("Terminal Game Collection")
-            | dim
-            | center
-    })
-    | border
-    | color(Color::Green)
-    | size(WIDTH, EQUAL, 40),
-
-    text(" "),
-
-    vbox({
-        text("GAMES")
-            | bold
-            | color(Color::Yellow)
-            | center,
-
-        separator(),
-
-        vbox(std::move(menu_items)),
-
-        separator(),
-
-        text("LEFT/RIGHT    Select")
-            | dim
-            | center,
-
-        text("ENTER    Start")
-            | dim
-            | center,
-
-        text("ESC/Q    Quit")
-            | dim
-            | center
-    })
-    | border
-    // | size(WIDTH, EQUAL, 40)
-})
-| center;
-
-}
-
-// ============================================================
-// SIZE
-// ============================================================
+// ====================================== OTHER ======================================
 
 int Renderer::width() const
 {

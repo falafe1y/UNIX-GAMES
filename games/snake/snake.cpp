@@ -243,7 +243,8 @@ void SnakeGame::move()
     snake_.push_front(head);
 
     if (head == food_)
-    {
+    {   
+        score_++;
         spawn_food();
     }
     else
@@ -330,8 +331,7 @@ bool SnakeGame::is_paused() const
 void SnakeGame::render(fgames::core::Renderer& renderer)
 {
     renderer.clear();
-
-    // renderer.draw_border();
+    renderer.set_score(score_);
 
     // Еда
     renderer.draw(food_.x, food_.y, ftxui::Color::Red);
@@ -348,16 +348,15 @@ void SnakeGame::render(fgames::core::Renderer& renderer)
 
     if (state_ == SnakeState::Paused)
     {
-        renderer.draw_exit_confirmation(
-            menu_selection_
-        );
+        renderer.draw_exit_confirmation(menu_selection_);
     }
     
     if (state_ == SnakeState::GameOver)
     {
-        renderer.draw_gameover(
-            menu_selection_
-        );
+        score_ = 0;
+
+        renderer.draw_gameover(menu_selection_);
+
     }
 
     renderer.present();

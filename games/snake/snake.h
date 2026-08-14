@@ -73,6 +73,8 @@ private:
     const int FIELD_HEIGHT_ = WorldConfig().world_height;
 
     std::mt19937 random_engine_;
+
+    int score_ = 0;
 };
 
 }

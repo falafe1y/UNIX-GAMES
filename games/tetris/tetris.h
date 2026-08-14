@@ -95,7 +95,7 @@ private:
 
     float fall_timer_{0.0f};
     float fall_interval_{0.8f};
-
+    
     int score_{0};
     int level_{1};
     int lines_cleared_{0};

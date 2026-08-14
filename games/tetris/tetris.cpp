@@ -359,7 +359,7 @@ void TetrisGame::handle_event(const fgames::core::Event& event)
                         level_++;
                         fall_interval_ = std::max(0.1f, 0.8f - (level_ - 1) * 0.07f);
                     }
-                    score_ += lines * 100 * level_;
+                    score_ += lines * 2 * level_;
                 }
                 spawn_tetromino();
             }
@@ -408,40 +408,27 @@ void TetrisGame::update(float delta_time)
                 fall_interval_ = std::max(0.1f, 0.8f - (level_ - 1) * 0.07f);
             }
             
-            // Подсчет очков
-            score_ += lines * 100 * level_;
+            score_ += lines * 2 * level_;
         }
         
         spawn_tetromino();
     }
 }
 
-// ============================================================
-// RESTART
-// ============================================================
-
 void TetrisGame::restart()
 {
     init_game();
 }
-
-// ============================================================
-// IS PAUSED
-// ============================================================
 
 bool TetrisGame::is_paused() const
 {
     return state_ != TetrisState::Running;
 }
 
-// ============================================================
-// RENDER
-// ============================================================
-
 void TetrisGame::render(fgames::core::Renderer& renderer)
 {
     renderer.clear();
-    // renderer.draw_border();
+    renderer.set_score(score_);
 
     // Отрисовка игрового поля
     for (int y = 0; y < FIELD_HEIGHT_; ++y)
@@ -467,12 +454,6 @@ void TetrisGame::render(fgames::core::Renderer& renderer)
         }
     }
 
-    // Отрисовка следующей фигуры (в правом верхнем углу)
-    // TODO: Добавить отрисовку превью следующей фигуры
-    
-    // Отрисовка счета и уровня
-    // TODO: Добавить отрисовку информации
-
     if (state_ == TetrisState::Paused)
     {
         renderer.draw_exit_confirmation(menu_selection_);
@@ -480,6 +461,7 @@ void TetrisGame::render(fgames::core::Renderer& renderer)
     
     if (state_ == TetrisState::GameOver)
     {
+        score_ = 0;
         renderer.draw_gameover(menu_selection_);
     }
 
