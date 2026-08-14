@@ -6,7 +6,7 @@ namespace fgames::core
 Renderer::Renderer()
     :
     buffer_(height_, std::string(width_, ' ')),
-    bg_buffer_(height_, std::vector<ftxui::Color>(width_, ftxui::Color::Black))
+    bg_buffer_(height_, std::vector<ftxui::Color>(width_, ftxui::Color::Default))
 {
 }
 
@@ -14,7 +14,7 @@ void Renderer::clear()
 {
     for (auto& row : bg_buffer_)
     {
-        std::fill(row.begin(), row.end(), ftxui::Color::Black);
+        std::fill(row.begin(), row.end(), ftxui::Color::Default);
     }
 
     overlay_ = ftxui::text("");
@@ -162,32 +162,28 @@ ftxui::Element Renderer::build_game_field() const
             cells.push_back(ftxui::text("  ") | ftxui::bgcolor(color));
         }
 
-        rows.push_back(hbox(std::move(cells)) | ftxui::center);
+        rows.push_back(hbox(std::move(cells)));
     }
 
-    return vbox(std::move(rows)) | ftxui::border;
+    return vbox(std::move(rows)) | ftxui::border | ftxui::center;
 }
-
-// ============================================================
-// GAME PRESENT
-// ============================================================
 
 ftxui::Element Renderer::present() const
 {
     using namespace ftxui;
 
-    const auto game = build_game_field();
+    // Сначала собираем игровое поле (уже с внутренней рамкой)
+    auto game = build_game_field();
 
-    if (overlay_)
-    {
-        return dbox({
-            game,
-            overlay_
-        });
+    // Если есть оверлей (меню выхода, game over и т.п.) — накладываем поверх поля
+    if (overlay_) {
+        game = dbox({ game, overlay_ });
     }
 
-    return game;
+    // Теперь оборачиваем ВСЁ (поле + оверлей) в рамку на весь экран
+    return border(game) | flex;
 }
+
 
 // menu
 ftxui::Element Renderer::build_menu(const std::vector<std::string>& items, int selected) const
