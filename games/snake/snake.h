@@ -6,7 +6,6 @@
 #include "../../core/head/game.h"
 #include "../../core/head/event.h"
 #include "../../core/head/renderer.h"
-#include <../../core/head/world_configuation.h>
 
 namespace fgames::games
 {
@@ -69,8 +68,8 @@ private:
     float move_timer_;
     float move_interval_;
 
-    const int FIELD_WITDH_ = WorldConfig().world_width;
-    const int FIELD_HEIGHT_ = WorldConfig().world_height;
+    const int FIELD_WIDTH_ = 20;
+    const int FIELD_HEIGHT_ = 20;
 
     std::mt19937 random_engine_;
 

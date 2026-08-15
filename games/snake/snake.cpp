@@ -12,8 +12,8 @@ move_timer_(0.0f),
 move_interval_(0.15f),
 random_engine_(std::random_device{}())
 {
+    set_world_size(FIELD_WIDTH_, FIELD_HEIGHT_);
     snake_.push_back({2, 2});
-
     spawn_food();
 }
 
@@ -256,7 +256,7 @@ void SnakeGame::move()
 bool SnakeGame::is_collision(const SnakePosition& SnakePosition) const
 {
     // Столкновение со стеной.
-    if (SnakePosition.x < 0 || SnakePosition.x >= FIELD_WITDH_ ||
+    if (SnakePosition.x < 0 || SnakePosition.x >= FIELD_WIDTH_ ||
         SnakePosition.y < 0 || SnakePosition.y >= FIELD_HEIGHT_)
     {
         return true;
@@ -274,7 +274,7 @@ bool SnakeGame::is_collision(const SnakePosition& SnakePosition) const
 
 void SnakeGame::spawn_food()
 {
-    std::uniform_int_distribution<int> x_distribution(0, FIELD_WITDH_ - 1);
+    std::uniform_int_distribution<int> x_distribution(0, FIELD_WIDTH_ - 1);
     std::uniform_int_distribution<int> y_distribution(0, FIELD_HEIGHT_ - 1);
 
     SnakePosition new_food;

@@ -43,8 +43,8 @@ private:
 
     DemoPosition position_{};
 
-    const int FIELD_WIDTH_ = WorldConfig().world_width;
-    const int FIELD_HEIGHT_ = WorldConfig().world_height;
+    const int FIELD_WIDTH_ = 10;
+    const int FIELD_HEIGHT_ = 10;
 };
 
 }

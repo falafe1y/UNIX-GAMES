@@ -1,7 +1,5 @@
 #pragma once
 
-#include "world_configuation.h"
-
 #include <string>
 #include <vector>
 #include <ftxui/dom/elements.hpp>
@@ -24,9 +22,10 @@ public:
 
     ftxui::Element present() const;
     ftxui::Element build_menu(const std::vector<std::string>& items, int selected) const;
-
-    void set_score(int score = 0) {current_game_score_ = score;};
     
+    void resize(int width, int height);
+    
+    void set_score(int score = 0) {current_game_score_ = score;};
     int width() const;
     int height() const;
 
@@ -35,10 +34,9 @@ private:
     ftxui::Element build_score_panel() const;
 
 private:
-    int width_ = WorldConfig().world_width;
-    int height_ = WorldConfig().world_height;
-
-    std::vector<std::string> buffer_;
+    int width_ = 0;
+    int height_ = 0;
+    
     std::vector<std::vector<ftxui::Color>> bg_buffer_;
     ftxui::Element overlay_;
 

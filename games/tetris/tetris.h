@@ -9,7 +9,6 @@
 #include "../../core/head/game.h"
 #include "../../core/head/event.h"
 #include "../../core/head/renderer.h"
-#include <../../core/head/world_configuation.h>
 
 namespace fgames::games
 {
@@ -82,8 +81,8 @@ private:
     void restart();
 
 private:
-    const int FIELD_WIDTH_ = WorldConfig().world_width;
-    const int FIELD_HEIGHT_ = WorldConfig().world_height;
+    const int FIELD_WIDTH_ = 30;
+    const int FIELD_HEIGHT_ = 25;
 
     TetrisState state_{TetrisState::Running};
     bool menu_selection_{false};

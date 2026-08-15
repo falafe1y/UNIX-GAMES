@@ -73,17 +73,11 @@ std::vector<TetrisPosition> TetrisGame::Tetromino::get_shape(TetrominoType type,
 }
 
 TetrisGame::TetrisGame()
-:
-field_(FIELD_HEIGHT_, std::vector<bool>(FIELD_WIDTH_, false)),
-random_engine_(std::random_device{}())
+    :
+    field_(FIELD_HEIGHT_, std::vector<bool>(FIELD_WIDTH_, false)),
+    random_engine_(std::random_device{}())
 {
-    // Проверка, что размеры корректны
-    if (FIELD_WIDTH_ <= 0 || FIELD_HEIGHT_ <= 0) {
-        std::cerr << "ERROR: Invalid field dimensions!" << std::endl;
-        // Выход из программы или исправление
-        std::exit(1);
-    }
-    
+    set_world_size(FIELD_WIDTH_, FIELD_HEIGHT_);
     init_game();
 }
 

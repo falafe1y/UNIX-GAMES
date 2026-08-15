@@ -5,7 +5,6 @@ namespace fgames::core
 
 Renderer::Renderer()
     :
-    buffer_(height_, std::string(width_, ' ')),
     bg_buffer_(height_, std::vector<ftxui::Color>(width_, ftxui::Color::Default))
 {
 }
@@ -232,7 +231,7 @@ ftxui::Element Renderer::build_menu(const std::vector<std::string>& items, int s
 ftxui::Element Renderer::build_game_field() const
 {
     ftxui::Elements rows;
-    rows.reserve(buffer_.size());
+    rows.reserve(bg_buffer_.size());
 
     for (const auto& row : bg_buffer_)
     {
@@ -300,6 +299,23 @@ ftxui::Element Renderer::present() const
 }
 
 // ====================================== OTHER ======================================
+
+void Renderer::resize(int width, int height)
+{
+    if (width_ == width && height_ == height)
+        return;
+
+    width_ = width;
+    height_ = height;
+
+    bg_buffer_.assign(
+        height_,
+        std::vector<ftxui::Color>(
+            width_,
+            ftxui::Color::Default
+        )
+    );
+}
 
 int Renderer::width() const
 {

@@ -124,6 +124,8 @@ ftxui::Element Engine::render(Game& game)
         timer_.reset();
     }
 
+    renderer_.resize(game.world_width(), game.world_height());
+
     renderer_.clear();
     game.render(renderer_);
 
