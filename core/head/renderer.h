@@ -16,7 +16,7 @@ public:
 
     void clear();
     
-    void draw(int x, int y, ftxui::Color color);
+    void draw(int x, int y, ftxui::Color color, const std::string& text = "");
     void draw_exit_confirmation(bool selected_option);
     void draw_gameover(bool selected_option);
 
@@ -38,6 +38,7 @@ private:
     int height_ = 0;
     
     std::vector<std::vector<ftxui::Color>> bg_buffer_;
+    std::vector<std::vector<std::string>> text_buffer_;
     ftxui::Element overlay_;
 
     int current_game_score_ = 0;

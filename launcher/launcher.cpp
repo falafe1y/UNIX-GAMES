@@ -3,6 +3,7 @@
 #include "../games/snake/snake.h"
 #include "../games/tetris/tetris.h"
 #include "../games/demo/demo.h"
+#include "../games/2048/2048.h"
 
 namespace fgames::launcher
 {
@@ -41,6 +42,16 @@ Launcher::Launcher()
             {
                 return std::make_unique<
                     fgames::games::TetrisGame
+                >();
+            }
+        },
+
+        {
+            "2048",
+            []()
+            {
+                return std::make_unique<
+                    fgames::games::Game2048
                 >();
             }
         }

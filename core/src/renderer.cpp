@@ -5,7 +5,8 @@ namespace fgames::core
 
 Renderer::Renderer()
     :
-    bg_buffer_(height_, std::vector<ftxui::Color>(width_, ftxui::Color::Default))
+    bg_buffer_(height_, std::vector<ftxui::Color>(width_, ftxui::Color::Default)),
+    text_buffer_(height_, std::vector<std::string>(width_))
 {
 }
 
@@ -16,12 +17,17 @@ void Renderer::clear()
         std::fill(row.begin(), row.end(), ftxui::Color::Default);
     }
 
+    for (auto& row : text_buffer_)
+    {
+        std::fill(row.begin(), row.end(), "");
+    }
+
     overlay_ = ftxui::text("");
 }
 
 // ====================================== DRAWING ======================================
 
-void Renderer::draw(int x, int y, ftxui::Color color)
+void Renderer::draw(int x, int y, ftxui::Color color, const std::string& text)
 {
     if (x < 0 || x >= width_) 
         return;
@@ -30,6 +36,7 @@ void Renderer::draw(int x, int y, ftxui::Color color)
         return;
 
     bg_buffer_[y][x] = color;
+    text_buffer_[y][x] = text;
 }
 
 void Renderer::draw_exit_confirmation(bool selected_option)
@@ -233,20 +240,42 @@ ftxui::Element Renderer::build_game_field() const
     ftxui::Elements rows;
     rows.reserve(bg_buffer_.size());
 
-    for (const auto& row : bg_buffer_)
+    for (std::size_t y = 0; y < bg_buffer_.size(); ++y)
     {
         ftxui::Elements cells;
-        cells.reserve(row.size());
+        cells.reserve(bg_buffer_[y].size());
 
-        for (const auto& color : row)
+        for (std::size_t x = 0; x < bg_buffer_[y].size(); ++x)
         {
-            cells.push_back(ftxui::text("  ") | ftxui::bgcolor(color));
+            const auto& color = bg_buffer_[y][x];
+            const auto& text = text_buffer_[y][x];
+
+            if (text.empty())
+            {
+                cells.push_back(
+                    ftxui::text("  ")
+                    | ftxui::bgcolor(color)
+                );
+            }
+            else
+            {
+                cells.push_back(
+                    ftxui::text(text)
+                    | ftxui::bold
+                    | ftxui::center
+                    | ftxui::bgcolor(color)
+                );
+            }
         }
 
-        rows.push_back(hbox(std::move(cells)));
+        rows.push_back(
+            ftxui::hbox(std::move(cells))
+        );
     }
 
-    return vbox(std::move(rows)) | ftxui::border | ftxui::center;
+    return ftxui::vbox(std::move(rows))
+        | ftxui::border
+        | ftxui::center;
 }
 
 ftxui::Element Renderer::build_score_panel() const
@@ -308,13 +337,8 @@ void Renderer::resize(int width, int height)
     width_ = width;
     height_ = height;
 
-    bg_buffer_.assign(
-        height_,
-        std::vector<ftxui::Color>(
-            width_,
-            ftxui::Color::Default
-        )
-    );
+    bg_buffer_.assign(height_, std::vector<ftxui::Color>(width_, ftxui::Color::Default));
+    text_buffer_.assign(height_, std::vector<std::string>(width_));
 }
 
 int Renderer::width() const
