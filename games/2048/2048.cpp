@@ -571,10 +571,6 @@ void Game2048::draw_board(
     }
 }
 
-// ============================================================
-// DRAW TILE
-// ============================================================
-
 void Game2048::draw_tile(
     fgames::core::Renderer& renderer,
     int row,
@@ -582,24 +578,17 @@ void Game2048::draw_tile(
     int value
 ) const
 {
-    // Размер одной визуальной плитки:
-    //
-    // 8 символов по ширине
-    // 5 строк по высоте
-    //
-    // 4 × 8  = 32
-    // 4 × 5  = 20
-
-    constexpr int GAP_X = 0;
-    constexpr int GAP_Y = 0;
-
     const int start_x =
-        column * (TILE_WIDTH + GAP_X);
+        column * TILE_WIDTH;
 
     const int start_y =
-        row * (TILE_HEIGHT + GAP_Y);
+        row * TILE_HEIGHT;
 
     const auto color = tile_color(value);
+
+    // --------------------------------------------------------
+    // Tile background.
+    // --------------------------------------------------------
 
     for (int y = 0; y < TILE_HEIGHT; ++y)
     {
@@ -616,19 +605,25 @@ void Game2048::draw_tile(
     if (value == 0)
         return;
 
-    const std::string text = std::to_string(value);
+    // --------------------------------------------------------
+    // Tile value.
+    // --------------------------------------------------------
+
+    const std::string text =
+        std::to_string(value);
 
     const int text_x =
-        start_x + (TILE_WIDTH - static_cast<int>(text.size())) / 2;
+        start_x +
+        (TILE_WIDTH - static_cast<int>(text.size())) / 2;
 
     const int text_y =
         start_y + TILE_HEIGHT / 2;
 
-    renderer.draw(
+    renderer.draw_text(
         text_x,
         text_y,
-        color,
-        text
+        text,
+        ftxui::Color::Black
     );
 }
 
