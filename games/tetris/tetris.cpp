@@ -461,7 +461,6 @@ void TetrisGame::render(fgames::core::Renderer& renderer)
     
     if (state_ == TetrisState::GameOver)
     {
-        score_ = 0;
         renderer.draw_gameover(menu_selection_);
     }
 

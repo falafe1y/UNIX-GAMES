@@ -274,8 +274,8 @@ bool SnakeGame::is_collision(const SnakePosition& SnakePosition) const
 
 void SnakeGame::spawn_food()
 {
-    std::uniform_int_distribution<int> x_distribution(1, FIELD_WITDH_ - 2);
-    std::uniform_int_distribution<int> y_distribution(1, FIELD_HEIGHT_ - 2);
+    std::uniform_int_distribution<int> x_distribution(0, FIELD_WITDH_ - 1);
+    std::uniform_int_distribution<int> y_distribution(0, FIELD_HEIGHT_ - 1);
 
     SnakePosition new_food;
 
@@ -308,7 +308,7 @@ bool SnakeGame::is_opposite(Direction first, Direction second) const
 void SnakeGame::restart()
 {
     snake_.clear();
-
+    score_ = 0;
     snake_.push_back({2, 2});
 
     direction_ = Direction::Right;
@@ -353,8 +353,6 @@ void SnakeGame::render(fgames::core::Renderer& renderer)
     
     if (state_ == SnakeState::GameOver)
     {
-        score_ = 0;
-
         renderer.draw_gameover(menu_selection_);
 
     }
