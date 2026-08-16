@@ -29,8 +29,10 @@ public:
 
 private:
     static constexpr int BOARD_SIZE = 4;
-    const int TILE_WIDTH = 8;
+    const int TILE_WIDTH = 5;
     const int TILE_HEIGHT = 5;
+    const int WORLD_WIDTH_ = 20;
+    const int WORLD_HEIGHT_ = 20;
 
     using Board = std::array<std::array<int, BOARD_SIZE>, BOARD_SIZE>;
 
